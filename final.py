@@ -1,17 +1,13 @@
 import requests
 import json
 import prettytable
-
-##APU020072610 gas 	APU010072610
-###'CUUR0000SA0L1E','SUUR0000SAH2','SUUR0000SA0'
 headers = {'Content-type': 'application/json'}
-data = json.dumps({"seriesid": ['CUUSA210SA0'],"startyear":"2018", "endyear":"2021"})
+data = json.dumps({"seriesid": ['CUUSS12ASA0','CUURS12ASA0','CUUR0000SA0','SUUR0000SA0'],"startyear":"2011", "endyear":"2014"})
 p = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers)
 json_data = json.loads(p.text)
 for series in json_data['Results']['series']:
     x=prettytable.PrettyTable(["series id","year","period","value","footnotes"])
     seriesId = series['seriesID']
-    print( series['data'])
     for item in series['data']:
         year = item['year']
         period = item['period']
