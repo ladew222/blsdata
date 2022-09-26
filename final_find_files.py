@@ -4,9 +4,35 @@ import prettytable
 import pandas as pd
 import googlemaps
 import datetime
+from numpy import random
+from math import radians, cos, sin, asin, sqrt
 
-df = pd.DataFrame(columns=['location','lat','lon','year','period','period_date','value'])
+df = pd.DataFrame(columns=['location','coords','lat','lon','year','period','period_date','value'])
 gmaps_key = googlemaps.Client(key="AIzaSyBlYSDiXeAAKbZQdUEDWCsPhKJPuOA-z7g")
+
+t
+def dist(lat1, long1, lat2, long2):
+    """
+Replicating the same formula as mentioned in Wiki
+    """
+    # convert decimal degrees to radians 
+    lat1, long1, lat2, long2 = map(radians, [lat1, long1, lat2, long2])
+    # haversine formula 
+    dlon = long2 - long1 
+    dlat = lat2 - lat1 
+    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+    c = 2 * asin(sqrt(a)) 
+    # Radius of earth in kilometers is 6371
+    km = 6371* c
+    return km
+
+def find_nearest(lat, long):
+    distances = df.apply(
+        lambda row: dist(lat, long, row['lat'], row['lon']), 
+        axis=1)
+    return df.loc[distances.idxmin(), 'location']
+
+
 
 def get_files(fnames):
     headers = {'Content-type': 'application/json'}
@@ -14,6 +40,7 @@ def get_files(fnames):
     data = json.dumps({"seriesid":   series,"startyear":"2014", "endyear":"2018"})
     p = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers)
     json_data = json.loads(p.text)
+    print(f"{json_data['status']}: {json_data['message']}")
     i = 0 
     for series in json_data['Results']['series']:
         location = fnames['area_name'].iloc[i]
@@ -23,14 +50,14 @@ def get_files(fnames):
         i=i+1
         #x=prettytable.PrettyTable(["series id","year","period","value","footnotes"])
         seriesId = series['seriesID']
-        print(f"geting:{seriesId}")
+        print(f"Processing:{seriesId}")
         for item in series['data']:
             period = item['period']
             value = item['value']
             if 'M01' <= period <= 'M12':
                 month = int(period[1:3])
                 period_date = datetime.date(year=item['year'], month=month, day=0)
-                df = df.append({'location': location, 'lat': lat, 'lon': lon,'year': item['year'],'period': period,'period_date': period_date, 'value': item['value']},ignore_index=True)
+                df = df.append({'location': location, 'coords':{'lat': lat, 'lon': lon},'lat': lat, 'lon': lon,'year': item['year'],'period': period,'period_date': period_date, 'value': item['value']},ignore_index=True)
 
 
 def get_file_list():
@@ -56,6 +83,10 @@ def get_file_list():
     out.to_csv('out.csv')
     get_files(out[['series_id','area_name']].head())
 
+def get_nearest(df_counties):
+    df_counties['name'] = df_counties.apply(
+    lambda row: find_nearest(row['lat'], row['lon']), 
+    axis=1)
 
 def main():
     
