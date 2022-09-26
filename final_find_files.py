@@ -88,6 +88,12 @@ def get_nearest(df_counties):
     lambda row: find_nearest(row['lat'], row['lon']), 
     axis=1)
 
+
+def get_county_data():
+
+
+
+
 def main():
     
     get_file_list()
