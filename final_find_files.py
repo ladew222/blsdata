@@ -90,7 +90,7 @@ def get_nearest(df_counties):
 
 
 def get_county_data():
-
+    df_counties = pd.read_csv('data.csv')
 
 
 
