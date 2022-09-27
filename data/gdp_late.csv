@@ -1,7 +1,3 @@
-"CAGDP2 Gross domestic product (GDP) by county and metropolitan area 1/"
-"Gross Domestic Product (GDP): All industry total (Percent change from preceding period)" 
-"Bureau of Economic Analysis" 
-"County"
 "GeoFips","GeoName","2013-2014","2014-2015","2015-2016","2016-2017","2017-2018","2018-2019","2019-2020"
 "01001","Autauga, AL",3.4,9.6,4.1,-2.0,2.9,-1.5,-0.5
 "01003","Baldwin, AL",4.0,6.7,6.9,4.9,7.8,7.9,0.8
@@ -3121,15 +3117,3 @@
 "56041","Uinta, WY",-1.1,-8.0,-1.8,1.8,0.5,-2.0,-10.4
 "56043","Washakie, WY",3.8,-0.6,-10.7,-4.1,3.5,5.6,-2.5
 "56045","Weston, WY",3.2,22.2,-21.8,6.6,14.1,-2.7,-11.5
-"Legend / Footnotes:"
-"1/ Gross Domestic Product (GDP) is in thousands of current dollars (not adjusted for inflation). Industry detail is based on the 2012 North American Industry Classification System (NAICS)."
-"* Estimates from 2008 forward separate Skagway-Hoonah-Angoon Census Area (02232) into Skagway Municipality (02230) and Hoonah-Angoon Census Area (02105). Estimates from 2009 forward separate Wrangell-Petersburg Census Area (02280) into Petersburg Census Area and Wrangell City and Borough (02275). In addition, a part of the Prince of Wales-Outer Ketchikan Census Area (02201) was annexed by Ketchikan Gateway Borough (02130) and part (Meyers Chuck Area) was included in the new Wrangell City and Borough (02275). The remainder of the Prince of Wales-Outer Ketchikan Census Area (02201) was renamed Prince of Wales-Hyder Census Area (02198). Petersburg Borough (02195) was created from part of former Petersburg Census Area and part of Hoonah-Angoon Census Area (02105) for 2013 forward. Prince of Wales-Hyder Census Area (02198) added part of the former Petersburg Census Area beginning in 2013. For years 2009-2012, Petersburg Borough (02195) reflects the geographic boundaries of the former Petersburg Census Area."
-"* Wade Hampton Census Area was renamed Kusilvak Census Area (02158) on July 1, 2015."
-"* On January 2, 2019, two new county equivalents were created from the former Valdez-Cordova Census Area, Alaska (02261): Chugach Census Area (02063) and Copper River Census Area (02066). Estimates for 2020 forward reflect these changes."
-"* Broomfield County, CO, was created from parts of Adams, Boulder, Jefferson, and Weld counties effective November 15, 2001. Estimates for Broomfield county begin with 2002."
-"* Kalawao County, Hawaii is combined with Maui County. Separate estimates for the jurisdictions making up the combination areas are not available."
-"* Shannon County, SD was renamed to Oglala Lakota County, SD on May 1, 2015."
-"* Virginia combination areas consist of one or two independent cities with 1980 populations of less than 100,000 combined with an adjacent county. The county name appears first, followed by the city name(s). Separate estimates for the jurisdictions making up the combination area are not available. Bedford County, VA includes the independent city of Bedford for all years."
-"Metropolitan Areas are defined (geographically delineated) by the Office of Management and Budget (OMB) bulletin no. 20-01 issued March 6, 2020."
-"(NA) Not available."
-"Last updated: December 8, 2021 -- new statistics for 2020, revised statistics for 2001-2019."

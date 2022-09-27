@@ -1,0 +1,452 @@
+--------------------------------------------------------------------------------
+Codebook for NHGIS data file 'nhgis0061_ds249_20205_county'
+--------------------------------------------------------------------------------
+ 
+Contents
+    - Data Summary
+    - Data Dictionary
+    - Citation and Use
+ 
+Additional documentation on NHGIS data sources is available at: 
+    https://www.nhgis.org/documentation/tabular-data 
+ 
+--------------------------------------------------------------------------------
+Data Summary
+--------------------------------------------------------------------------------
+ 
+Year:             2016-2020
+Geographic level: County (by State)
+Dataset:          2020 American Community Survey: 5-Year Data [2016-2020, Block Groups & Larger Areas]
+   NHGIS code:    2016_2020_ACS5a
+   NHGIS ID:      ds249
+Breakdown(s):     Geographic Subarea:
+                     Total area (00)
+Data type(s):     (E) Estimates
+                  (M) Margins of error
+ 
+Tables:
+ 
+1. Total Population
+   Universe:    Total population
+   Source code: B01003
+   NHGIS code:  AMPV
+ 
+2. Race
+   Universe:    Total population
+   Source code: B02001
+   NHGIS code:  AMPW
+ 
+3. Educational Attainment for the Population 25 Years and Over
+   Universe:    Population 25 years and over
+   Source code: B15003
+   NHGIS code:  AMRZ
+ 
+4. Household Income in the Past 12 Months (in 2020 Inflation-Adjusted Dollars)
+   Universe:    Households
+   Source code: B19001
+   NHGIS code:  AMR7
+ 
+5. Median Household Income in the Past 12 Months (in 2020 Inflation-Adjusted Dollars)
+   Universe:    Households
+   Source code: B19013
+   NHGIS code:  AMR8
+ 
+6. Median Family Income in the Past 12 Months (in 2020 Inflation-Adjusted Dollars)
+   Universe:    Families
+   Source code: B19113
+   NHGIS code:  AMS6
+ 
+7. Employment Status for the Population 16 Years and Over
+   Universe:    Population 16 years and over
+   Source code: B23025
+   NHGIS code:  AMT9
+ 
+8. Tenure
+   Universe:    Occupied housing units
+   Source code: B25003
+   NHGIS code:  AMUF
+ 
+9. Units in Structure
+   Universe:    Housing units
+   Source code: B25024
+   NHGIS code:  AMU4
+ 
+10. Ratio of Income to Poverty Level in the Past 12 Months
+    Universe:    Population for whom poverty status is determined
+    Source code: C17002
+    NHGIS code:  AMZM
+ 
+--------------------------------------------------------------------------------
+Data Dictionary
+--------------------------------------------------------------------------------
+ 
+Context Fields 
+        GISJOIN:     GIS Join Match Code
+        YEAR:        Data File Year
+        STUSAB:      State Postal Abbreviation
+        REGIONA:     Region Code
+        DIVISIONA:   Division Code
+        STATE:       State Name
+        STATEA:      State Code
+        COUNTY:      County Name
+        COUNTYA:     County Code
+        CTY_SUBA:    County Subdivision Code
+        PLACEA:      Place Code
+        TRACTA:      Census Tract Code
+        BLCK_GRPA:   Block Group Code
+        C_CITYA:     Consolidated City Code
+        AIANHHA:     American Indian Area/Alaska Native Area/Hawaiian Home Land Code
+        RES_ONLYA:   American Indian Area/Alaska Native Area (Reservation or Statistical Entity Only) Code
+        TRUSTA:      American Indian Area (Off-Reservation Trust Land Only)/Hawaiian Home Land Code
+        AIHHTLI:     American Indian Trust Land/ Hawaiian Home Land Indicator
+        TRBL_SUBA:   Tribal Subdivision Code
+        AITS:        American Indian Tribal Subdivision (FIPS)
+        ANRCA:       Alaska Native Regional Corporation Code
+        CBSAA:       Core Based (Metropolitan/Micropolitan) Statistical Area [2003-Present] Code
+        CSAA:        Combined Statistical Area [2003-Present] Code
+        METDIVA:     Metropolitan Division [2003-Present] Code
+        MEMI:        Metropolitan/Micropolitan Indicator Flag
+        NECTAA:      New England City and Town Area [2003-Present] Code
+        C_NECTAA:    Combined New England City and Town Area [2003-Present] Code
+        NECTADIVA:   New England City and Town Area Division [2003-Present] Code
+        URB_AREAA:   Urban Area [1970-Present] Code
+        CDA:         Congressional District Code
+        STLEG_UPA:   State Legislative District (Upper Chamber) Code
+        STLEG_LOA:   State Legislative District (Lower Chamber) Code
+        ZCTAA:       5-Digit ZIP Code Tabulation Area [2000-Present] Code
+        SUBMCDA:     Subminor Civil Division [Puerto Rico] Code
+        SD_ELMA:     School District (Elementary) Code
+        SD_SECA:     School District (Secondary) Code
+        SD_UNIA:     School District (Unified) Code
+        UR:          Urban/Rural
+        PCI:         Principal City Indicator
+        PUMAA:       Public Use Microdata Sample Area (PUMA) Code
+        GEOID:       Census Geographic Identifier
+        TRBL_CTA:    Tribal Census Tract Code
+        TRBL_BGA:    Tribal Block Group Code
+ 
+Data Type (E):
+    Estimates
+ 
+        NAME_E:      Area Name
+ 
+    Table 1:     Total Population
+    Universe:    Total population
+    Source code: B01003
+    NHGIS code:  AMPV
+        AMPVE001:    Total
+ 
+    Table 2:     Race
+    Universe:    Total population
+    Source code: B02001
+    NHGIS code:  AMPW
+        AMPWE001:    Total
+        AMPWE002:    White alone
+        AMPWE003:    Black or African American alone
+        AMPWE004:    American Indian and Alaska Native alone
+        AMPWE005:    Asian alone
+        AMPWE006:    Native Hawaiian and Other Pacific Islander alone
+        AMPWE007:    Some other race alone
+        AMPWE008:    Two or more races
+        AMPWE009:    Two or more races: Two races including Some other race
+        AMPWE010:    Two or more races: Two races excluding Some other race, and three or more races
+ 
+    Table 3:     Educational Attainment for the Population 25 Years and Over
+    Universe:    Population 25 years and over
+    Source code: B15003
+    NHGIS code:  AMRZ
+        AMRZE001:    Total
+        AMRZE002:    No schooling completed
+        AMRZE003:    Nursery school
+        AMRZE004:    Kindergarten
+        AMRZE005:    1st grade
+        AMRZE006:    2nd grade
+        AMRZE007:    3rd grade
+        AMRZE008:    4th grade
+        AMRZE009:    5th grade
+        AMRZE010:    6th grade
+        AMRZE011:    7th grade
+        AMRZE012:    8th grade
+        AMRZE013:    9th grade
+        AMRZE014:    10th grade
+        AMRZE015:    11th grade
+        AMRZE016:    12th grade, no diploma
+        AMRZE017:    Regular high school diploma
+        AMRZE018:    GED or alternative credential
+        AMRZE019:    Some college, less than 1 year
+        AMRZE020:    Some college, 1 or more years, no degree
+        AMRZE021:    Associate's degree
+        AMRZE022:    Bachelor's degree
+        AMRZE023:    Master's degree
+        AMRZE024:    Professional school degree
+        AMRZE025:    Doctorate degree
+ 
+    Table 4:     Household Income in the Past 12 Months (in 2020 Inflation-Adjusted Dollars)
+    Universe:    Households
+    Source code: B19001
+    NHGIS code:  AMR7
+        AMR7E001:    Total
+        AMR7E002:    Less than $10,000
+        AMR7E003:    $10,000 to $14,999
+        AMR7E004:    $15,000 to $19,999
+        AMR7E005:    $20,000 to $24,999
+        AMR7E006:    $25,000 to $29,999
+        AMR7E007:    $30,000 to $34,999
+        AMR7E008:    $35,000 to $39,999
+        AMR7E009:    $40,000 to $44,999
+        AMR7E010:    $45,000 to $49,999
+        AMR7E011:    $50,000 to $59,999
+        AMR7E012:    $60,000 to $74,999
+        AMR7E013:    $75,000 to $99,999
+        AMR7E014:    $100,000 to $124,999
+        AMR7E015:    $125,000 to $149,999
+        AMR7E016:    $150,000 to $199,999
+        AMR7E017:    $200,000 or more
+ 
+    Table 5:     Median Household Income in the Past 12 Months (in 2020 Inflation-Adjusted Dollars)
+    Universe:    Households
+    Source code: B19013
+    NHGIS code:  AMR8
+        AMR8E001:    Median household income in the past 12 months (in 2020 inflation-adjusted dollars)
+ 
+    Table 6:     Median Family Income in the Past 12 Months (in 2020 Inflation-Adjusted Dollars)
+    Universe:    Families
+    Source code: B19113
+    NHGIS code:  AMS6
+        AMS6E001:    Median family income in the past 12 months (in 2020 inflation-adjusted dollars)
+ 
+    Table 7:     Employment Status for the Population 16 Years and Over
+    Universe:    Population 16 years and over
+    Source code: B23025
+    NHGIS code:  AMT9
+        AMT9E001:    Total
+        AMT9E002:    In labor force
+        AMT9E003:    In labor force: Civilian labor force
+        AMT9E004:    In labor force: Civilian labor force: Employed
+        AMT9E005:    In labor force: Civilian labor force: Unemployed
+        AMT9E006:    In labor force: Armed Forces
+        AMT9E007:    Not in labor force
+ 
+    Table 8:     Tenure
+    Universe:    Occupied housing units
+    Source code: B25003
+    NHGIS code:  AMUF
+        AMUFE001:    Total
+        AMUFE002:    Owner occupied
+        AMUFE003:    Renter occupied
+ 
+    Table 9:     Units in Structure
+    Universe:    Housing units
+    Source code: B25024
+    NHGIS code:  AMU4
+        AMU4E001:    Total
+        AMU4E002:    1, detached
+        AMU4E003:    1, attached
+        AMU4E004:    2
+        AMU4E005:    3 or 4
+        AMU4E006:    5 to 9
+        AMU4E007:    10 to 19
+        AMU4E008:    20 to 49
+        AMU4E009:    50 or more
+        AMU4E010:    Mobile home
+        AMU4E011:    Boat, RV, van, etc.
+ 
+    Table 10:    Ratio of Income to Poverty Level in the Past 12 Months
+    Universe:    Population for whom poverty status is determined
+    Source code: C17002
+    NHGIS code:  AMZM
+        AMZME001:    Total
+        AMZME002:    Under .50
+        AMZME003:    .50 to .99
+        AMZME004:    1.00 to 1.24
+        AMZME005:    1.25 to 1.49
+        AMZME006:    1.50 to 1.84
+        AMZME007:    1.85 to 1.99
+        AMZME008:    2.00 and over
+ 
+Data Type (M):
+    Margins of error
+ 
+        NAME_M:      Area Name
+ 
+    Table 1:     Total Population
+    Universe:    Total population
+    Source code: B01003
+    NHGIS code:  AMPV
+        AMPVM001:    Total
+ 
+    Table 2:     Race
+    Universe:    Total population
+    Source code: B02001
+    NHGIS code:  AMPW
+        AMPWM001:    Total
+        AMPWM002:    White alone
+        AMPWM003:    Black or African American alone
+        AMPWM004:    American Indian and Alaska Native alone
+        AMPWM005:    Asian alone
+        AMPWM006:    Native Hawaiian and Other Pacific Islander alone
+        AMPWM007:    Some other race alone
+        AMPWM008:    Two or more races
+        AMPWM009:    Two or more races: Two races including Some other race
+        AMPWM010:    Two or more races: Two races excluding Some other race, and three or more races
+ 
+    Table 3:     Educational Attainment for the Population 25 Years and Over
+    Universe:    Population 25 years and over
+    Source code: B15003
+    NHGIS code:  AMRZ
+        AMRZM001:    Total
+        AMRZM002:    No schooling completed
+        AMRZM003:    Nursery school
+        AMRZM004:    Kindergarten
+        AMRZM005:    1st grade
+        AMRZM006:    2nd grade
+        AMRZM007:    3rd grade
+        AMRZM008:    4th grade
+        AMRZM009:    5th grade
+        AMRZM010:    6th grade
+        AMRZM011:    7th grade
+        AMRZM012:    8th grade
+        AMRZM013:    9th grade
+        AMRZM014:    10th grade
+        AMRZM015:    11th grade
+        AMRZM016:    12th grade, no diploma
+        AMRZM017:    Regular high school diploma
+        AMRZM018:    GED or alternative credential
+        AMRZM019:    Some college, less than 1 year
+        AMRZM020:    Some college, 1 or more years, no degree
+        AMRZM021:    Associate's degree
+        AMRZM022:    Bachelor's degree
+        AMRZM023:    Master's degree
+        AMRZM024:    Professional school degree
+        AMRZM025:    Doctorate degree
+ 
+    Table 4:     Household Income in the Past 12 Months (in 2020 Inflation-Adjusted Dollars)
+    Universe:    Households
+    Source code: B19001
+    NHGIS code:  AMR7
+        AMR7M001:    Total
+        AMR7M002:    Less than $10,000
+        AMR7M003:    $10,000 to $14,999
+        AMR7M004:    $15,000 to $19,999
+        AMR7M005:    $20,000 to $24,999
+        AMR7M006:    $25,000 to $29,999
+        AMR7M007:    $30,000 to $34,999
+        AMR7M008:    $35,000 to $39,999
+        AMR7M009:    $40,000 to $44,999
+        AMR7M010:    $45,000 to $49,999
+        AMR7M011:    $50,000 to $59,999
+        AMR7M012:    $60,000 to $74,999
+        AMR7M013:    $75,000 to $99,999
+        AMR7M014:    $100,000 to $124,999
+        AMR7M015:    $125,000 to $149,999
+        AMR7M016:    $150,000 to $199,999
+        AMR7M017:    $200,000 or more
+ 
+    Table 5:     Median Household Income in the Past 12 Months (in 2020 Inflation-Adjusted Dollars)
+    Universe:    Households
+    Source code: B19013
+    NHGIS code:  AMR8
+        AMR8M001:    Median household income in the past 12 months (in 2020 inflation-adjusted dollars)
+ 
+    Table 6:     Median Family Income in the Past 12 Months (in 2020 Inflation-Adjusted Dollars)
+    Universe:    Families
+    Source code: B19113
+    NHGIS code:  AMS6
+        AMS6M001:    Median family income in the past 12 months (in 2020 inflation-adjusted dollars)
+ 
+    Table 7:     Employment Status for the Population 16 Years and Over
+    Universe:    Population 16 years and over
+    Source code: B23025
+    NHGIS code:  AMT9
+        AMT9M001:    Total
+        AMT9M002:    In labor force
+        AMT9M003:    In labor force: Civilian labor force
+        AMT9M004:    In labor force: Civilian labor force: Employed
+        AMT9M005:    In labor force: Civilian labor force: Unemployed
+        AMT9M006:    In labor force: Armed Forces
+        AMT9M007:    Not in labor force
+ 
+    Table 8:     Tenure
+    Universe:    Occupied housing units
+    Source code: B25003
+    NHGIS code:  AMUF
+        AMUFM001:    Total
+        AMUFM002:    Owner occupied
+        AMUFM003:    Renter occupied
+ 
+    Table 9:     Units in Structure
+    Universe:    Housing units
+    Source code: B25024
+    NHGIS code:  AMU4
+        AMU4M001:    Total
+        AMU4M002:    1, detached
+        AMU4M003:    1, attached
+        AMU4M004:    2
+        AMU4M005:    3 or 4
+        AMU4M006:    5 to 9
+        AMU4M007:    10 to 19
+        AMU4M008:    20 to 49
+        AMU4M009:    50 or more
+        AMU4M010:    Mobile home
+        AMU4M011:    Boat, RV, van, etc.
+ 
+    Table 10:    Ratio of Income to Poverty Level in the Past 12 Months
+    Universe:    Population for whom poverty status is determined
+    Source code: C17002
+    NHGIS code:  AMZM
+        AMZMM001:    Total
+        AMZMM002:    Under .50
+        AMZMM003:    .50 to .99
+        AMZMM004:    1.00 to 1.24
+        AMZMM005:    1.25 to 1.49
+        AMZMM006:    1.50 to 1.84
+        AMZMM007:    1.85 to 1.99
+        AMZMM008:    2.00 and over
+ 
+--------------------------------------------------------------------------------
+Citation and Use of NHGIS Data
+--------------------------------------------------------------------------------
+ 
+All persons are granted a limited license to use this documentation and the
+accompanying data, subject to the following conditions:
+
+* REDISTRIBUTION: You will not redistribute the data without permission.
+
+  You may publish a subset of the data to meet journal requirements for accessing 
+  data related to a particular publication. Contact us for permission for any other 
+  redistribution; we will consider requests for free and commercial redistribution.
+
+* CITATION: You will cite NHGIS appropriately.
+
+    * Publications and research reports employing NHGIS data (either tabular or GIS) 
+      should include the following citation:
+
+        Steven Manson, Jonathan Schroeder, David Van Riper, Tracy Kugler, and Steven Ruggles. 
+        IPUMS National Historical Geographic Information System: Version 17.0 
+        [dataset]. Minneapolis, MN: IPUMS. 2022. 
+        http://doi.org/10.18128/D050.V17.0
+
+    * For policy briefs, online resources, or articles in the popular press, we 
+      recommend that you cite the use of NHGIS data as follows:
+
+        IPUMS NHGIS, University of Minnesota, www.nhgis.org.
+
+These terms of use are a legally binding agreement. You can use the data only in 
+accordance with these terms, and any other use is a violation of the agreement. 
+Violations may result in revocation of the agreement and prohibition from using other 
+IPUMS data. If IPUMS or our partners are harmed from your violation, you are 
+responsible for all damages, including reasonable attorney's fees and expenses.
+        
+In addition, we request that users send us a copy of any publications, research
+reports, or educational material making use of the data or documentation.
+
+Send electronic material to: nhgis@umn.edu
+
+Printed matter should be sent to:
+
+    IPUMS NHGIS
+    Institute for Social Research and Data Innovation
+    University of Minnesota
+    50 Willey Hall
+    225 19th Ave S
+    Minneapolis, MN 55455

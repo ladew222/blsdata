@@ -90,7 +90,19 @@ def get_nearest(df_counties):
 
 
 def get_county_data():
-    df_counties = pd.read_csv('data.csv')
+    df_counties1 = pd.read_csv("./data/gdp_early.csv",error_bad_lines=False, dtype=str)
+    df_counties2 = pd.read_csv("./data/gdp_late.csv",error_bad_lines=False, dtype=str)
+    df_counties =  df_counties1.merge(df_counties2, how='left', left_on='GeoFips',right_on='GeoFips')
+    df_counties['state'] = df_counties['GeoFips'].str.slice(0,2).astype(int)
+    df_counties['county'] = df_counties['GeoFips'].str.slice(2,5).astype(int)
+    acs_2019 = pd.read_csv("./data/nhgis0061_csv/nhgis0061_ds245_20195_county_2015-19.csv", encoding = "ISO-8859-1")
+    acs_2019b = pd.read_csv("./data/nhgis0061_csv/nhgis0061_ds244_20195_county_2015-19.csv", encoding = "ISO-8859-1")
+    acs_2019_all = acs_2019.merge(acs_2019b, how='left', left_on='GISJOIN',right_on='GISJOIN')
+    df_counties.columns
+    df_county_all = df_counties.merge(acs_2019_all, how='inner', left_on=['state', 'county'], right_on=['STATEA_x', 'COUNTYA_x'])
+    df_county_all.dropna(axis=1, how='all')
+    df_county_all.dropna(thresh=len(df_county_all) - 100, axis=1)
+    
 
 
 
