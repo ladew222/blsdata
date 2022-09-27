@@ -100,15 +100,16 @@ def get_county_data():
     acs_2019_all = acs_2019.merge(acs_2019b, how='left', left_on='GISJOIN',right_on='GISJOIN')
     df_counties.columns
     df_county_all = df_counties.merge(acs_2019_all, how='inner', left_on=['state', 'county'], right_on=['STATEA_x', 'COUNTYA_x'])
-    df_county_all.dropna(axis=1, how='all')
-    df_county_all.dropna(thresh=len(df_county_all) - 100, axis=1)
+    df_county_all = df_county_all.dropna(thresh=len(df_county_all) - 10, axis=1)
+    ##zillow
     
-
-
-
+    df_zillow = pd.read_csv("./data/Metro_median_sale_price_uc_sfrcondo_month.csv")
+    df_zillow_cross = pd.read_csv("./data/CountyCrossWalk_Zillow.csv",encoding = "ISO-8859-1")
+    df_zillow_all = df_zillow_cross.merge(df_zillow, how='left', left_on='MetroRegionID_Zillow',right_on='RegionID')
+    df_county_all2 = df_county_all.merge(df_zillow_all , how='inner', left_on=['STATEA_x', 'COUNTYA_x'], right_on=['State_FIPS', 'County_FIPS'])
 def main():
-    
-    get_file_list()
+    get_county_data()
+    #get_file_list()
 
 if __name__ == "__main__":
     main()
