@@ -1,6 +1,5 @@
 import requests
 import json
-import prettytable
 import pandas as pd
 import googlemaps
 import datetime
@@ -10,7 +9,6 @@ from math import radians, cos, sin, asin, sqrt
 df = pd.DataFrame(columns=['location','coords','lat','lon','year','period','period_date','value'])
 gmaps_key = googlemaps.Client(key="AIzaSyBlYSDiXeAAKbZQdUEDWCsPhKJPuOA-z7g")
 
-t
 def dist(lat1, long1, lat2, long2):
     """
 Replicating the same formula as mentioned in Wiki
@@ -108,8 +106,8 @@ def get_county_data():
     df_zillow_all = df_zillow_cross.merge(df_zillow, how='left', left_on='MetroRegionID_Zillow',right_on='RegionID')
     df_county_all2 = df_county_all.merge(df_zillow_all , how='inner', left_on=['STATEA_x', 'COUNTYA_x'], right_on=['StateFIPS', 'CountyFIPS'])
     df_zip = pd.read_csv("./data/us_county_latlng.csv", dtype=str)
-    df_zip.dtypes
     df_county_all3 = df_county_all2.merge(df_zip, how='left', left_on='GeoFips',right_on='fips_code')
+    ##not get the 
 def main():
     get_county_data()
     #get_file_list()
