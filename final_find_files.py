@@ -106,7 +106,10 @@ def get_county_data():
     df_zillow = pd.read_csv("./data/Metro_median_sale_price_uc_sfrcondo_month.csv")
     df_zillow_cross = pd.read_csv("./data/CountyCrossWalk_Zillow.csv",encoding = "ISO-8859-1")
     df_zillow_all = df_zillow_cross.merge(df_zillow, how='left', left_on='MetroRegionID_Zillow',right_on='RegionID')
-    df_county_all2 = df_county_all.merge(df_zillow_all , how='inner', left_on=['STATEA_x', 'COUNTYA_x'], right_on=['State_FIPS', 'County_FIPS'])
+    df_county_all2 = df_county_all.merge(df_zillow_all , how='inner', left_on=['STATEA_x', 'COUNTYA_x'], right_on=['StateFIPS', 'CountyFIPS'])
+    df_zip = pd.read_csv("./data/us_county_latlng.csv", dtype=str)
+    df_zip.dtypes
+    df_county_all3 = df_county_all2.merge(df_zip, how='left', left_on='GeoFips',right_on='fips_code')
 def main():
     get_county_data()
     #get_file_list()
