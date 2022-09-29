@@ -1,23 +1,150 @@
 import requests
 import json
-import prettytable
-headers = {'Content-type': 'application/json'}
-data = json.dumps({"seriesid": ['CUUSS12ASA0','CUURS12ASA0','CUUR0000SA0','SUUR0000SA0'],"startyear":"2011", "endyear":"2014"})
-p = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers)
-json_data = json.loads(p.text)
-for series in json_data['Results']['series']:
-    x=prettytable.PrettyTable(["series id","year","period","value","footnotes"])
-    seriesId = series['seriesID']
-    for item in series['data']:
-        year = item['year']
-        period = item['period']
-        value = item['value']
-        footnotes=""
-        for footnote in item['footnotes']:
-            if footnote:
-                footnotes = footnotes + footnote['text'] + ','
-        if 'M01' <= period <= 'M12':
-            x.add_row([seriesId,year,period,value,footnotes[0:-1]])
-    output = open(seriesId + '.txt','w')
-    output.write (x.get_string())
-    output.close()
+import pandas as pd
+import googlemaps
+import datetime
+from numpy import random
+from math import radians, cos, sin, asin, sqrt
+
+
+gmaps_key = googlemaps.Client(key="AIzaSyBlYSDiXeAAKbZQdUEDWCsPhKJPuOA-z7g")
+
+def dist(lat1, long1, lat2, long2):
+    """
+Replicating the same formula as mentioned in Wiki
+    """
+    # convert decimal degrees to radians 
+    lat1, long1, lat2, long2 = map(radians, [lat1, long1, lat2, long2])
+    # haversine formula 
+    dlon = long2 - long1 
+    dlat = lat2 - lat1 
+    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+    c = 2 * asin(sqrt(a)) 
+    # Radius of earth in kilometers is 6371
+    km = 6371* c
+    return km
+
+def ComputeVals(row):
+    return row['Ordinal_7pt'] + row['Ordinal_5pt']
+
+
+def find_nearest(in_row):
+    distances = df.apply(
+        lambda row: dist(in_row['lat'], in_row['lon'], row['lat'], row['lon']), 
+        axis=1)
+    return df.loc[distances.idxmin(), 'location']
+
+
+
+def get_files(fnames):
+    df = pd.DataFrame(columns=['location','coords','lat','lon','year','period','period_date','value'])
+    #take individual areas and put into one file via the api and list provided
+    headers = {'Content-type': 'application/json'}
+    series =  fnames["series_id"].values.tolist()
+    data = json.dumps({"seriesid":   series,"startyear":"2014", "endyear":"2018"})
+    p = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers)
+    json_data = json.loads(p.text)
+    print(f"{json_data['status']}: {json_data['message']}")
+    i = 0 
+    ## each series will have historical data for one area
+    for series in json_data['Results']['series']:
+        location = fnames['area_name'].iloc[i]
+        g = gmaps_key.geocode(location)
+        lat = g[0]["geometry"]["location"]["lat"]
+        lon = g[0]["geometry"]["location"]["lng"]
+        i=i+1
+        seriesId = series['seriesID']
+        print(f"Processing historical data in:{seriesId} for location :{location}")
+        for item in series['data']:
+            period = item['period']
+            value = item['value']
+            ##find the month data and instert it into row for place with lat and lon
+            if 'M01' <= period <= 'M12':
+                month = int(period[1:3])
+                period_date = datetime.date(year=int(item['year']), month=month, day=int(1))
+                df = df.append({'location': location, 'coords':{'lat': lat, 'lon': lon},'lat': lat, 'lon': lon,'year': item['year'],'period': period,'period_date': period_date, 'value': item['value']},ignore_index=True)
+
+    return(df)
+
+
+def get_file_list(reload):
+    if (reload):
+        #collect the list of files from here. Will have to loop through and parse individual
+        df_area_names = pd.read_csv('./data/cu_area_names.csv')
+        df_area_names = df_area_names.iloc[15: , :]
+        df_inf = pd.read_csv('./data/all_areas_inf.csv')
+        #df_inf = df_inf[['series_id','sid']]
+        df_inf["sid"] =  df_inf["series_id"].str.slice(4, 8)
+        df_inf.to_csv('out.csv')  
+        #df_inf[df_inf['sid'] >= 'A210']
+        #merge area names with list of series which contain the filenames with the data needed
+        df_merge_left = df_area_names.merge(df_inf, how='left', left_on='area_code',right_on='sid')
+        df_merge_left = df_merge_left.drop_duplicates(subset=['series_id','area_name'], keep='first')
+        df_merge_left['series_id']= df_merge_left['series_id'].str.strip()
+        df_merge_left= df_merge_left[['series_id','area_name']].drop_duplicates(subset = ["series_id"])
+        df_merge_left = df_merge_left[['area_name','series_id']]
+        df_merge_left.to_csv('out.csv')
+        #df_m2 = df_merge_left[df_merge_left['series_id'].str.endswith('0')]
+        #df = df_merge_left[df_merge_left['series_id'].str[-3:]=='SA0']
+        df_merge_left["rep_id"] =  df_merge_left["series_id"].str.slice(8,11)
+        df_merge_left["rep_type"] =  df_merge_left["series_id"].str.slice(3,4)
+        out = df_merge_left[df_merge_left['rep_id'].str.contains("SA0")]
+        #out = out[out['rep_type'] == 'R']
+        out.to_csv('out.csv')
+        ## we have 2 series numbers for each location where inflation is tracked
+        return get_files(out[['series_id','area_name']])
+    else:
+        out = pd.read_csv("out.csv")
+        return get_files(out[['series_id','area_name']])
+        ##now we have a list of areas and series numbers to send to api
+   
+
+def get_nearest(df_counties):
+    df_counties['name'] = df_counties.apply(
+    lambda row: find_nearest(row['lat'], row['lon']), 
+    axis=1)
+
+
+def get_county_data():
+    df_counties1 = pd.read_csv("./data/gdp_early.csv",error_bad_lines=False, dtype=str)
+    df_counties2 = pd.read_csv("./data/gdp_late.csv",error_bad_lines=False, dtype=str)
+    df_counties =  df_counties1.merge(df_counties2, how='left', left_on='GeoFips',right_on='GeoFips')
+    df_counties['state'] = df_counties['GeoFips'].str.slice(0,2).astype(int)
+    df_counties['county'] = df_counties['GeoFips'].str.slice(2,5).astype(int)
+    acs_2019 = pd.read_csv("./data/nhgis0061_csv/nhgis0061_ds245_20195_county_2015-19.csv", encoding = "ISO-8859-1")
+    acs_2019b = pd.read_csv("./data/nhgis0061_csv/nhgis0061_ds244_20195_county_2015-19.csv", encoding = "ISO-8859-1")
+    acs_2019_all = acs_2019.merge(acs_2019b, how='left', left_on='GISJOIN',right_on='GISJOIN')
+    df_counties.columns
+    df_county_all = df_counties.merge(acs_2019_all, how='inner', left_on=['state', 'county'], right_on=['STATEA_x', 'COUNTYA_x'])
+    df_county_all = df_county_all.dropna(thresh=len(df_county_all) - 10, axis=1)
+    ##zillow
+    
+    df_zillow = pd.read_csv("./data/Metro_median_sale_price_uc_sfrcondo_month.csv")
+    df_zillow_cross = pd.read_csv("./data/CountyCrossWalk_Zillow.csv",encoding = "ISO-8859-1")
+    df_zillow_all = df_zillow_cross.merge(df_zillow, how='left', left_on='MetroRegionID_Zillow',right_on='RegionID')
+    df_county_all2 = df_county_all.merge(df_zillow_all , how='inner', left_on=['STATEA_x', 'COUNTYA_x'], right_on=['StateFIPS', 'CountyFIPS'])
+    df_zip = pd.read_csv("./data/us_county_latlng.csv", dtype=str)
+    df_county_all3 = df_county_all2.merge(df_zip, how='left', left_on='GeoFips',right_on='fips_code')
+    ##not get the 
+    
+    df_county_all3['inf_city'] = df_county_all3.apply(find_nearest, axis=1)
+def main():
+    # Get County Data includes Zillow,BEA, and Census
+    #get_county_data()
+    GetGeoCoded = True
+    ## get BLS Data on inflaction
+    if (GetGeoCoded):
+         df=get_file_list(True)
+         ##false if already processed report file listings
+         df.to_csv('out_geo.csv') 
+    else:
+        df= pd.read_csv("out_geo.csv")
+    #merge the two sets now based on nearest geography
+      
+        
+   
+    #save data for later use
+        
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,87 @@
+,area_name,series_id,rep_id,rep_type
+613,"Cleveland-Akron, OH",CUURA210SA0,SA0,R
+1329,"Cleveland-Akron, OH",CUUSA210SA0,SA0,S
+1711,"Milwaukee-Racine, WI",CUURA212SA0,SA0,R
+2093,"Milwaukee-Racine, WI",CUUSA212SA0,SA0,S
+2627,"Cincinnati-Hamilton, OH-KY-IN",CUURA213SA0,SA0,R
+3161,"Cincinnati-Hamilton, OH-KY-IN",CUUSA213SA0,SA0,S
+3654,"Kansas City, MO-KS",CUURA214SA0,SA0,R
+4147,"Kansas City, MO-KS",CUUSA214SA0,SA0,S
+4249,"Washington-Baltimore, DC-MD-VA-WV",CUURA311SA0,SA0,R
+4397,"Washington-Baltimore, DC-MD-VA-WV",CUUSA311SA0,SA0,S
+5557,"Los Angeles-Riverside-Orange County, CA",CUURA421SA0,SA0,R
+6756,"Los Angeles-Riverside-Orange County, CA",CUUSA421SA0,SA0,S
+7202,"Portland-Salem, OR-WA",CUURA425SA0,SA0,R
+7648,"Portland-Salem, OR-WA",CUUSA425SA0,SA0,S
+8217,Size Class D,CUURD000SA0,SA0,R
+8786,Size Class D,CUUSD000SA0,SA0,S
+9355,Midwest - Size Class D,CUURD200SA0,SA0,R
+9924,Midwest - Size Class D,CUUSD200SA0,SA0,S
+10493,South - Size Class D,CUURD300SA0,SA0,R
+11062,South - Size Class D,CUUSD300SA0,SA0,S
+11164,Size Class B/C,CUURN000SA0,SA0,R
+11498,Size Class B/C,CUUSN000SA0,SA0,S
+11574,Northeast - Size Class B/C,CUURN100SA0,SA0,R
+11908,Northeast - Size Class B/C,CUUSN100SA0,SA0,S
+11984,Midwest - Size Class B/C,CUURN200SA0,SA0,R
+12318,Midwest - Size Class B/C,CUUSN200SA0,SA0,S
+12394,South - Size Class B/C,CUURN300SA0,SA0,R
+12728,South - Size Class B/C,CUUSN300SA0,SA0,S
+12804,West - Size Class B/C,CUURN400SA0,SA0,R
+13138,West - Size Class B/C,CUUSN400SA0,SA0,S
+13676,Size Class A,CUURS000SA0,SA0,R
+14244,Size Class A,CUUSS000SA0,SA0,S
+14877,Northeast - Size Class A,CUURS100SA0,SA0,R
+15519,Northeast - Size Class A,CUUSS100SA0,SA0,S
+16323,"Boston-Cambridge-Newton, MA-NH",CUURS11ASA0,SA0,R
+17127,"Boston-Cambridge-Newton, MA-NH",CUUSS11ASA0,SA0,S
+18399,"New York-Newark-Jersey City, NY-NJ-PA",CUURS12ASA0,SA0,R
+19671,"New York-Newark-Jersey City, NY-NJ-PA",CUUSS12ASA0,SA0,S
+20795,"Philadelphia-Camden-Wilmington, PA-NJ-DE-MD",CUURS12BSA0,SA0,R
+21919,"Philadelphia-Camden-Wilmington, PA-NJ-DE-MD",CUUSS12BSA0,SA0,S
+22561,Midwest - Size Class A,CUURS200SA0,SA0,R
+23203,Midwest - Size Class A,CUUSS200SA0,SA0,S
+24475,"Chicago-Naperville-Elgin, IL-IN-WI",CUURS23ASA0,SA0,R
+25747,"Chicago-Naperville-Elgin, IL-IN-WI",CUUSS23ASA0,SA0,S
+26805,"Detroit-Warren-Dearborn, MI",CUURS23BSA0,SA0,R
+27863,"Detroit-Warren-Dearborn, MI",CUUSS23BSA0,SA0,S
+28401,"Minneapolis-St.Paul-Bloomington, MN-WI",CUURS24ASA0,SA0,R
+28940,"Minneapolis-St.Paul-Bloomington, MN-WI",CUUSS24ASA0,SA0,S
+29553,"St. Louis, MO-IL",CUURS24BSA0,SA0,R
+30166,"St. Louis, MO-IL",CUUSS24BSA0,SA0,S
+30808,South - Size Class A,CUURS300SA0,SA0,R
+31450,South - Size Class A,CUUSS300SA0,SA0,S
+32185,"Washington-Arlington-Alexandria, DC-VA-MD-WV",CUURS35ASA0,SA0,R
+32869,"Washington-Arlington-Alexandria, DC-VA-MD-WV",CUUSS35ASA0,SA0,S
+33247,"Miami-Fort Lauderdale-West Palm Beach, FL",CUURS35BSA0,SA0,R
+33676,"Miami-Fort Lauderdale-West Palm Beach, FL",CUUSS35BSA0,SA0,S
+34302,"Atlanta-Sandy Springs-Roswell, GA",CUURS35CSA0,SA0,R
+34928,"Atlanta-Sandy Springs-Roswell, GA",CUUSS35CSA0,SA0,S
+35051,"Tampa-St. Petersburg-Clearwater, FL",CUURS35DSA0,SA0,R
+35147,"Tampa-St. Petersburg-Clearwater, FL",CUUSS35DSA0,SA0,S
+35860,"Baltimore-Columbia-Towson, MD",CUURS35ESA0,SA0,R
+36552,"Baltimore-Columbia-Towson, MD",CUUSS35ESA0,SA0,S
+36999,"Dallas-Fort Worth-Arlington, TX",CUURS37ASA0,SA0,R
+37497,"Dallas-Fort Worth-Arlington, TX",CUUSS37ASA0,SA0,S
+38301,"Houston-The Woodlands-Sugar Land, TX",CUURS37BSA0,SA0,R
+39105,"Houston-The Woodlands-Sugar Land, TX",CUUSS37BSA0,SA0,S
+39747,West - Size Class A,CUURS400SA0,SA0,R
+40389,West - Size Class A,CUUSS400SA0,SA0,S
+40512,"Phoenix-Mesa-Scottsdale, AZ",CUURS48ASA0,SA0,R
+40548,"Phoenix-Mesa-Scottsdale, AZ",CUUSS48ASA0,SA0,S
+40776,"Denver-Aurora-Lakewood, CO",CUURS48BSA0,SA0,R
+41058,"Denver-Aurora-Lakewood, CO",CUUSS48BSA0,SA0,S
+42330,"Los Angeles-Long Beach-Anaheim, CA",CUURS49ASA0,SA0,R
+43602,"Los Angeles-Long Beach-Anaheim, CA",CUUSS49ASA0,SA0,S
+44428,"San Francisco-Oakland-Hayward, CA",CUURS49BSA0,SA0,R
+45254,"San Francisco-Oakland-Hayward, CA",CUUSS49BSA0,SA0,S
+45369,"Riverside-San Bernardino-Ontario, CA",CUURS49CSA0,SA0,R
+45402,"Riverside-San Bernardino-Ontario, CA",CUUSS49CSA0,SA0,S
+45986,Seattle-Tacoma-Bellevue WA,CUURS49DSA0,SA0,R
+46672,Seattle-Tacoma-Bellevue WA,CUUSS49DSA0,SA0,S
+46948,"San Diego-Carlsbad, CA",CUURS49ESA0,SA0,R
+47224,"San Diego-Carlsbad, CA",CUUSS49ESA0,SA0,S
+47506,Urban Hawaii,CUURS49FSA0,SA0,R
+47788,Urban Hawaii,CUUSS49FSA0,SA0,S
+48068,Urban Alaska,CUURS49GSA0,SA0,R
+48348,Urban Alaska,CUUSS49GSA0,SA0,S
