@@ -29,13 +29,14 @@ def ComputeVals(row):
 
 
 def find_nearest(in_row):
+    df= pd.read_csv("out_geo.csv")
     distances = df.apply(
         lambda row: dist(in_row['lat'], in_row['lon'], row['lat'], row['lon']), 
         axis=1)
     return df.loc[distances.idxmin(), 'location']
 
 
-
+#can only do 24 series at a time
 def get_files(fnames):
     df = pd.DataFrame(columns=['location','coords','lat','lon','year','period','period_date','value'])
     #take individual areas and put into one file via the api and list provided
@@ -44,25 +45,27 @@ def get_files(fnames):
     data = json.dumps({"seriesid":   series,"startyear":"2014", "endyear":"2018"})
     p = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers)
     json_data = json.loads(p.text)
-    print(f"{json_data['status']}: {json_data['message']}")
+    print(f"{json_data['status']}: {json_data['message']} \n")
     i = 0 
     ## each series will have historical data for one area
     for series in json_data['Results']['series']:
         location = fnames['area_name'].iloc[i]
+        i=i+1;
         g = gmaps_key.geocode(location)
-        lat = g[0]["geometry"]["location"]["lat"]
-        lon = g[0]["geometry"]["location"]["lng"]
-        i=i+1
-        seriesId = series['seriesID']
-        print(f"Processing historical data in:{seriesId} for location :{location}")
-        for item in series['data']:
-            period = item['period']
-            value = item['value']
-            ##find the month data and instert it into row for place with lat and lon
-            if 'M01' <= period <= 'M12':
-                month = int(period[1:3])
-                period_date = datetime.date(year=int(item['year']), month=month, day=int(1))
-                df = df.append({'location': location, 'coords':{'lat': lat, 'lon': lon},'lat': lat, 'lon': lon,'year': item['year'],'period': period,'period_date': period_date, 'value': item['value']},ignore_index=True)
+        ##location found
+        if (len(g)>0):
+            lat = g[0]["geometry"]["location"]["lat"]
+            lon = g[0]["geometry"]["location"]["lng"]
+            seriesId = series['seriesID']
+            print(f"Processing historical data in:{seriesId} for location :{location}\n")
+            for item in series['data']:
+                period = item['period']
+                value = item['value']
+                ##find the month data and instert it into row for place with lat and lon
+                if 'M01' <= period <= 'M12':
+                    month = int(period[1:3])
+                    period_date = datetime.date(year=int(item['year']), month=month, day=int(1))
+                    df = df.append({'location': location, 'coords':{'lat': lat, 'lon': lon},'lat': lat, 'lon': lon,'year': item['year'],'period': period,'period_date': period_date, 'value': item['value']},ignore_index=True)
 
     return(df)
 
@@ -92,10 +95,24 @@ def get_file_list(reload):
         #out = out[out['rep_type'] == 'R']
         out.to_csv('out.csv')
         ## we have 2 series numbers for each location where inflation is tracked
-        return get_files(out[['series_id','area_name']])
+        df = get_files(out[['series_id','area_name']].iloc[:24])
+        df2 = get_files(out[['series_id','area_name']].iloc[25:49])
+        df3 = get_files(out[['series_id','area_name']].iloc[49:74])
+        df4 = get_files(out[['series_id','area_name']].iloc[74:])
+        all = pd.concat([df, df2], axis=0)
+        all = pd.concat([all, df3], axis=0)
+        all = pd.concat([all, df4], axis=0)
+        return all
     else:
         out = pd.read_csv("out.csv")
-        return get_files(out[['series_id','area_name']])
+        df = get_files(out[['series_id','area_name']].iloc[:24])
+        df2 = get_files(out[['series_id','area_name']].iloc[25:49])
+        df3 = get_files(out[['series_id','area_name']].iloc[49:74])
+        df4 = get_files(out[['series_id','area_name']].iloc[74:])
+        all = pd.concat([df, df2], axis=0)
+        all = pd.concat([all, df3], axis=0)
+        all = pd.concat([all, df4], axis=0)
+        return all
         ##now we have a list of areas and series numbers to send to api
    
 
@@ -125,22 +142,23 @@ def get_county_data():
     df_county_all2 = df_county_all.merge(df_zillow_all , how='inner', left_on=['STATEA_x', 'COUNTYA_x'], right_on=['StateFIPS', 'CountyFIPS'])
     df_zip = pd.read_csv("./data/us_county_latlng.csv", dtype=str)
     df_county_all3 = df_county_all2.merge(df_zip, how='left', left_on='GeoFips',right_on='fips_code')
-    ##not get the 
+    ##now get the nearest location for inflation 
     
     df_county_all3['inf_city'] = df_county_all3.apply(find_nearest, axis=1)
 def main():
     # Get County Data includes Zillow,BEA, and Census
     #get_county_data()
-    GetGeoCoded = True
+    GetGeoCoded = False
     ## get BLS Data on inflaction
     if (GetGeoCoded):
-         df=get_file_list(True)
+         ### True to get new list of locations
+         df=get_file_list(False)
          ##false if already processed report file listings
          df.to_csv('out_geo.csv') 
     else:
         df= pd.read_csv("out_geo.csv")
     #merge the two sets now based on nearest geography
-      
+    get_county_data()
         
    
     #save data for later use
