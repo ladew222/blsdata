@@ -6,7 +6,8 @@ import datetime
 from numpy import random
 from math import radians, cos, sin, asin, sqrt
 
-
+df_inf = []
+df_counties = []
 gmaps_key = googlemaps.Client(key="AIzaSyBlYSDiXeAAKbZQdUEDWCsPhKJPuOA-z7g")
 
 def dist(lat1, long1, lat2, long2):
@@ -14,7 +15,8 @@ def dist(lat1, long1, lat2, long2):
 Replicating the same formula as mentioned in Wiki
     """
     # convert decimal degrees to radians 
-    lat1, long1, lat2, long2 = map(radians, [lat1, long1, lat2, long2])
+    
+    lat1, long1, lat2, long2 = map(radians, [float(lat1), float(long1), float(lat2), float(long2)])
     # haversine formula 
     dlon = long2 - long1 
     dlat = lat2 - lat1 
@@ -42,7 +44,7 @@ def get_files(fnames):
     #take individual areas and put into one file via the api and list provided
     headers = {'Content-type': 'application/json'}
     series =  fnames["series_id"].values.tolist()
-    data = json.dumps({"seriesid":   series,"startyear":"2014", "endyear":"2018"})
+    data = json.dumps({"seriesid":   series,"startyear":"2013", "endyear":"2019"})
     p = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers)
     json_data = json.loads(p.text)
     print(f"{json_data['status']}: {json_data['message']} \n")
@@ -140,11 +142,37 @@ def get_county_data():
     df_zillow_cross = pd.read_csv("./data/CountyCrossWalk_Zillow.csv",encoding = "ISO-8859-1")
     df_zillow_all = df_zillow_cross.merge(df_zillow, how='left', left_on='MetroRegionID_Zillow',right_on='RegionID')
     df_county_all2 = df_county_all.merge(df_zillow_all , how='inner', left_on=['STATEA_x', 'COUNTYA_x'], right_on=['StateFIPS', 'CountyFIPS'])
+    ##get zip data
     df_zip = pd.read_csv("./data/us_county_latlng.csv", dtype=str)
     df_county_all3 = df_county_all2.merge(df_zip, how='left', left_on='GeoFips',right_on='fips_code')
     ##now get the nearest location for inflation 
-    
+    ##geocode the counties
+    #df_county_all3['gcode'] = df_county_all3.GeoName_x.apply(gmaps_key.geocode)
+    #df_county_all3['lat'] = [g.latitude for g in df_county_all3.gcode]
+    #df_county_all3['lon'] = [g.longitude for g in df_county_all3.gcode]
+
     df_county_all3['inf_city'] = df_county_all3.apply(find_nearest, axis=1)
+    df_county_all3
+    df_county_all3.to_csv('all_counties.csv') 
+
+
+             
+    
+def assign_inflation():   
+    global df_inf
+    global df_counties
+    df_inf = pd.read_csv("out_geo.csv")
+    df_counties= pd.read_csv("all_counties.csv")
+    for i, row in df_counties.iterrows():
+        for index, row2 in df_inf.iterrows():
+            if row2['location'] == row['inf_city']:
+                month = row2['period'][1:]
+                period_date = datetime.date(year=int(row2['year']), month=int(month), day=int(1))
+                date_time = period_date.strftime("%m/%d/%Y")
+                df_counties.at[i,date_time] = row2['value']
+
+    df_counties.to_csv('out_fin.csv') 
+    
 def main():
     # Get County Data includes Zillow,BEA, and Census
     #get_county_data()
@@ -152,13 +180,14 @@ def main():
     ## get BLS Data on inflaction
     if (GetGeoCoded):
          ### True to get new list of locations
-         df=get_file_list(False)
+         df=get_file_list(True)
          ##false if already processed report file listings
          df.to_csv('out_geo.csv') 
     else:
         df= pd.read_csv("out_geo.csv")
     #merge the two sets now based on nearest geography
-    get_county_data()
+    ##get_county_data()
+    assign_inflation()
         
    
     #save data for later use
