@@ -172,12 +172,25 @@ def assign_inflation():
                 df_counties.at[i,date_time] = row2['value']
 
     df_counties.to_csv('out_fin.csv') 
+    ee = df_counties[['GeoName_x','inf_city','3/01/2008']]
     
 def main():
+    ########
     # Get County Data includes Zillow,BEA, and Census
-    #get_county_data()
+    # This pulls the data, uses string functions to create a common key 
+    # from a longer string to create state and county numbers and joins on common field
+    # outputs all_counties.csv
+    #######
+    GetCounty = True
+    if GetCounty ==True:
+        get_county_data()
+        
+    #####
+    # This will pull a new list of bls location file names with their latatutide and longitude
+    # Else it will pull the processed file from csvu
+    # Returns out_geo.csv
+    #####
     GetGeoCoded = False
-    ## get BLS Data on inflaction
     if (GetGeoCoded):
          ### True to get new list of locations
          df=get_file_list(True)
@@ -185,8 +198,12 @@ def main():
          df.to_csv('out_geo.csv') 
     else:
         df= pd.read_csv("out_geo.csv")
-    #merge the two sets now based on nearest geography
-    ##get_county_data()
+    #######
+    # This will take our merged county data and find the closest inflation data
+    # it will then assign all appropriate longiutal data for the dates based on the match
+    # the rows should then have date fields with */*/* dates for inflation where available
+    # the final output should be out_fin.csv
+    ####### 
     assign_inflation()
         
    
