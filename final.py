@@ -172,7 +172,6 @@ def assign_inflation():
                 df_counties.at[i,date_time] = row2['value']
 
     df_counties.to_csv('out_fin.csv') 
-    ee = df_counties[['GeoName_x','inf_city','3/01/2008']]
     
 def main():
     ########
@@ -181,16 +180,20 @@ def main():
     # from a longer string to create state and county numbers and joins on common field
     # outputs all_counties.csv
     #######
-    GetCounty = True
+    GetCounty = False # get all_counties.csv
     if GetCounty ==True:
         get_county_data()
         
     #####
     # This will pull a new list of bls location file names with their latatutide and longitude
-    # Else it will pull the processed file from csvu
+    # Else it will pull the processed file from csv
+    # ** this step is neccessary because the bls has their data availble by location not by agregate
+    # with the neccessary detail
+    # It then uses the list of files and loops through the names and sends to the API
+    # and gets the longitual data for inflation and puts that information in a row of out_geo.csv
     # Returns out_geo.csv
     #####
-    GetGeoCoded = False
+    GetGeoCoded = False  #get out_geo.csv
     if (GetGeoCoded):
          ### True to get new list of locations
          df=get_file_list(True)
@@ -199,12 +202,13 @@ def main():
     else:
         df= pd.read_csv("out_geo.csv")
     #######
-    # This will take our merged county data and find the closest inflation data
-    # it will then assign all appropriate longiutal data for the dates based on the match
+    # This will take our merged county data and find the closest inflation data in a row of 
+    # out_geo.csv
+    # It will then assign all appropriate longiutal data from out_geo for the match
     # the rows should then have date fields with */*/* dates for inflation where available
     # the final output should be out_fin.csv
     ####### 
-    assign_inflation()
+    assign_inflation()  #merge out_geo and and all_counties using geograhic correlation
         
    
     #save data for later use
