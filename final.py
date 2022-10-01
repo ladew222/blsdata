@@ -176,8 +176,10 @@ def assign_inflation():
 def main():
     ########
     # Get County Data includes Zillow,BEA, and Census
-    # This pulls the data, uses string functions to create a common key 
-    # from a longer string to create state and county numbers and joins on common field
+    # This pulls the data. It will then merge the data by state id and county
+    # In some data this comes as one string.  We need to break apart and create fields
+    # then we can join togehter on common keys.
+    # The bea data is monthly like Zillow but their is missing data for locations where county GPD not tracked
     # outputs all_counties.csv
     #######
     GetCounty = False # get all_counties.csv
@@ -185,12 +187,12 @@ def main():
         get_county_data()
         
     #####
-    # This will pull a new list of bls location file names with their latatutide and longitude
-    # Else it will pull the processed file from csv
+    # This will pull a new list of bls location file names and geocode their latatutide and longitude
     # ** this step is neccessary because the bls has their data availble by location not by agregate
-    # with the neccessary detail
-    # It then uses the list of files and loops through the names and sends to the API
-    # and gets the longitual data for inflation and puts that information in a row of out_geo.csv
+    # with the neccessary detail.
+    # It then uses the list of file names and send to BLS via the API which will allow us to extract
+    # the monthly longitual CPI for each county
+    # We then put the longitual data in a row of out_geo.csv which will match to a location
     # Returns out_geo.csv
     #####
     GetGeoCoded = False  #get out_geo.csv
