@@ -14,7 +14,7 @@ area_code,area_name,display_level,selectable,sort_sequence
 480,Mountain,1,T,55
 490,Pacific,1,T,56
 A104,"Pittsburgh, PA",1,T,9
-A210,"Cleveland-Akron, OH",1,T,19
+,"Cleveland-Akron, OH",1,T,19
 A212,"Milwaukee-Racine, WI",1,T,20
 A213,"Cincinnati-Hamilton, OH-KY-IN",1,T,21
 A214,"Kansas City, MO-KS",1,T,22

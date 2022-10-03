@@ -80,11 +80,12 @@ def get_sub_areas():
     df_area_names = pd.read_csv('./data/cu_area_names.csv')
     df_area_names = df_area_names.iloc[15: , :]
     df_area_names['housing']='CUUR'+ df_area_names['area_code'] +'SAH'
-    series =  df_area_names['housing'].values.tolist()
-    i=1
-    j=i+14
-    for index, row in df_area_names.loc[i:j].iterrows():
-        i=i+15  #do 15 at a time as api will not allow any more
+    cnt = df_area_names.shape[0]
+    num_loops = int(cnt/15)
+    x=0
+    for x in range(num_loops):
+        series =  df_area_names['housing'].loc[x:x+15].values.tolist()
+        x=x+15
         data = json.dumps({"seriesid":   series,"startyear":"2013", "endyear":"2019"})
         p = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers)
         json_data = json.loads(p.text)
@@ -244,10 +245,10 @@ def main():
     else:
         df= pd.read_csv("out_geo.csv")
     
-    GetGeoCoded2 = False  #get out_geo2.csv
+    GetGeoCoded2 = True  #get out_geo2.csv
     if (GetGeoCoded2):
          ### True to get new list of locations
-         df=get_file_list(True)
+         df=get_sub_areas()
          ##false if already processed report file listings
          df.to_csv('out_geo2.csv') 
     else:
@@ -261,7 +262,7 @@ def main():
     # Like the the bea data there are gaps in this data where the BLS did not have data for
     # a location and time period.
     ####### 
-    assign_inflation()  #merge out_geo and and all_counties using geograhic correlation
+    #assign_inflation()  #merge out_geo and and all_counties using geograhic correlation
         
    
     #save data for later use

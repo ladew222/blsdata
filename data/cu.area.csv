@@ -1,4 +1,4 @@
-area_code,area_name,display_level,selectable,sort_sequence
+area_namearea_code,,display_level,selectable,sort_sequence
 0,U.S. city average,0,T,1
 100,Northeast,0,T,5
 110,New England,1,T,10
