@@ -71,6 +71,46 @@ def get_files(fnames):
 
     return(df)
 
+#can only do 24 series at a time
+#for sub cpi
+def get_sub_areas():
+    df = pd.DataFrame(columns=['location','coords','lat','lon','year','period','period_date','value'])
+    #take individual areas and put into one file via the api and list provided
+    headers = {'Content-type': 'application/json'}
+    df_area_names = pd.read_csv('./data/cu_area_names.csv')
+    df_area_names = df_area_names.iloc[15: , :]
+    df_area_names['housing']='CUUR'+ df_area_names['area_code'] +'SAH'
+    series =  df_area_names['housing'].values.tolist()
+    i=1
+    j=i+14
+    for index, row in df_area_names.loc[i:j].iterrows():
+        i=i+15  #do 15 at a time as api will not allow any more
+        data = json.dumps({"seriesid":   series,"startyear":"2013", "endyear":"2019"})
+        p = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers)
+        json_data = json.loads(p.text)
+        print(f"{json_data['status']}: {json_data['message']} \n")
+        i = 0 
+        ## each series will have historical data for one area
+        for series in json_data['Results']['series']:
+            location = df_area_names['area_name'].iloc[i]
+            i=i+1;
+            g = gmaps_key.geocode(location)
+            ##location found
+            if (len(g)>0):
+                lat = g[0]["geometry"]["location"]["lat"]
+                lon = g[0]["geometry"]["location"]["lng"]
+                seriesId = series['seriesID']
+                print(f"Processing historical data in:{seriesId} for location :{location}\n")
+                for item in series['data']:
+                    period = item['period']
+                    value = item['value']
+                    ##find the month data and instert it into row for place with lat and lon
+                    if 'M01' <= period <= 'M12':
+                        month = int(period[1:3])
+                        period_date = datetime.date(year=int(item['year']), month=month, day=int(1))
+                        df = df.append({'location': location, 'coords':{'lat': lat, 'lon': lon},'lat': lat, 'lon': lon,'year': item['year'],'period': period,'period_date': period_date, 'value': item['value']},ignore_index=True)
+
+    return(df)
 
 def get_file_list(reload):
     if (reload):
@@ -203,12 +243,23 @@ def main():
          df.to_csv('out_geo.csv') 
     else:
         df= pd.read_csv("out_geo.csv")
+    
+    GetGeoCoded2 = False  #get out_geo2.csv
+    if (GetGeoCoded2):
+         ### True to get new list of locations
+         df=get_file_list(True)
+         ##false if already processed report file listings
+         df.to_csv('out_geo2.csv') 
+    else:
+        df= pd.read_csv("out_geo2.csv")
     #######
-    # This will take our merged county data and find the closest inflation data in a row of 
+    # This will take our merged county data and find the closest cpi data in a row of 
     # out_geo.csv
     # It will then assign all appropriate longiutal data from out_geo for the match
     # the rows should then have date fields with */*/* dates for inflation where available
-    # the final output should be out_fin.csv
+    # the final output should be out_fin.csv.
+    # Like the the bea data there are gaps in this data where the BLS did not have data for
+    # a location and time period.
     ####### 
     assign_inflation()  #merge out_geo and and all_counties using geograhic correlation
         
