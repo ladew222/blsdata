@@ -73,18 +73,23 @@ def get_files(fnames):
 
 #can only do 24 series at a time
 #for sub cpi
-def get_sub_areas():
+def get_sub_areas(subject):
     df = pd.DataFrame(columns=['location','coords','lat','lon','year','period','period_date','value'])
     #take individual areas and put into one file via the api and list provided
     headers = {'Content-type': 'application/json'}
     df_area_names = pd.read_csv('./data/cu_area_names.csv')
     df_area_names = df_area_names.iloc[15: , :]
-    df_area_names['housing']='CUUR'+ df_area_names['area_code'] +'SAH'
+    df_area_names['series']='CUUR'+ df_area_names['area_code'] + subject
     cnt = df_area_names.shape[0]
     num_loops = int(cnt/15)
+    extra=  cnt%15
     x=0
-    for x in range(num_loops):
-        series =  df_area_names['housing'].loc[x:x+15].values.tolist()
+    for x in range(num_loops+1):
+        top = x +15
+        if x == num_loops:
+            series =  df_area_names['series'].iloc[x:x+extra].values.tolist()
+        else:
+            series =  df_area_names['series'].iloc[x:top].values.tolist()
         x=x+15
         data = json.dumps({"seriesid":   series,"startyear":"2013", "endyear":"2019"})
         p = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers)
@@ -248,7 +253,7 @@ def main():
     GetGeoCoded2 = True  #get out_geo2.csv
     if (GetGeoCoded2):
          ### True to get new list of locations
-         df=get_sub_areas()
+         df=get_sub_areas('SAH')
          ##false if already processed report file listings
          df.to_csv('out_geo2.csv') 
     else:
