@@ -212,6 +212,7 @@ def get_county_data():
 
     df_county_all3['inf_city'] = df_county_all3.apply(find_nearest, axis=1)
     df_counties = df_county_all3
+    return df_county_all3
     df_county_all3.to_csv('all_counties.csv') 
 
 
@@ -229,10 +230,10 @@ def assign_sub_inflation():
                 date_time = period_date.strftime("%m/%d/%Y")
                 df_counties.at[i,date_time] = row2['value']
     df_counties.to_csv('all_counties_a.csv') 
+    return df_counties
              
     
-def assign_inflation(df_in):   
-    global df_counties
+def assign_inflation(df_in, df_counties):   
     for i, row in df_counties.iterrows():
         for index, row2 in df_in.iterrows():
             if row2['location'] == row['inf_city']:
@@ -240,8 +241,8 @@ def assign_inflation(df_in):
                 period_date = datetime.date(year=int(row2['year']), month=int(month), day=int(1))
                 date_time = row2['series'] + '_' + period_date.strftime("%m/%d/%Y")
                 df_counties.at[i,date_time] = row2['value']
-
     df_counties.to_csv('out_fin.csv') 
+    return df_counties
     
 def main():
     ########
@@ -255,7 +256,7 @@ def main():
     #######
     GetCounty = False # get all_counties.csv
     if GetCounty ==True:
-        get_county_data()
+        df_counties = get_county_data()
     else:
         df_counties = pd.read_csv("all_counties.csv")
         
@@ -287,8 +288,8 @@ def main():
     ####### 
     cpi_df=get_sub_areas('SAH')
     cpi_house=get_sub_areas('SA0')
-    assign_inflation(cpi_df)
-    assign_inflation(cpi_house)
+    df_counties =assign_inflation(cpi_df, df_counties)
+    df_counties =assign_inflation(cpi_house, df_counties)
     #merge out_geo and and all_counties using geograhic correlation
         
 
