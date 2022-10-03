@@ -202,13 +202,27 @@ def get_county_data():
     df_county_all3.to_csv('all_counties.csv') 
 
 
+
+def assign_sub_inflation():   
+    global df_inf
+    global df_counties
+    df_inf = pd.read_csv("out_geo2.csv")
+    df_counties= pd.read_csv("all_counties.csv")
+    for i, row in df_counties.iterrows():
+        for index, row2 in df_inf.iterrows():
+            if row2['location'] == row['inf_city']:
+                month = row2['period'][1:]
+                period_date = datetime.date(year=int(row2['year']), month=int(month), day=int(2))
+                date_time = period_date.strftime("%m/%d/%Y")
+                df_counties.at[i,date_time] = row2['value']
+    df_counties.to_csv('all_counties_a.csv') 
              
     
 def assign_inflation():   
     global df_inf
     global df_counties
     df_inf = pd.read_csv("out_geo.csv")
-    df_counties= pd.read_csv("all_counties.csv")
+    df_counties= pd.read_csv("all_counties_a.csv")
     for i, row in df_counties.iterrows():
         for index, row2 in df_inf.iterrows():
             if row2['location'] == row['inf_city']:
@@ -250,7 +264,7 @@ def main():
     else:
         df= pd.read_csv("out_geo.csv")
     
-    GetGeoCoded2 = True  #get out_geo2.csv
+    GetGeoCoded2 = False  #get out_geo2.csv
     if (GetGeoCoded2):
          ### True to get new list of locations
          df=get_sub_areas('SAH')
@@ -267,6 +281,7 @@ def main():
     # Like the the bea data there are gaps in this data where the BLS did not have data for
     # a location and time period.
     ####### 
+    assign_sub_inflation()
     #assign_inflation()  #merge out_geo and and all_counties using geograhic correlation
         
    
