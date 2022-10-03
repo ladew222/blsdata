@@ -8,6 +8,7 @@ from math import radians, cos, sin, asin, sqrt
 
 df_inf = []
 df_counties = []
+df_area_names =[]
 gmaps_key = googlemaps.Client(key="AIzaSyBlYSDiXeAAKbZQdUEDWCsPhKJPuOA-z7g")
 
 def dist(lat1, long1, lat2, long2):
@@ -74,13 +75,15 @@ def get_files(fnames):
 #can only do 24 series at a time
 #for sub cpi
 def get_sub_areas(subject):
-    df = pd.DataFrame(columns=['location','coords','lat','lon','year','period','period_date','value'])
+    df = pd.DataFrame(columns=['location','series','coords','lat','lon','year','period','period_date','value'])
     #take individual areas and put into one file via the api and list provided
     headers = {'Content-type': 'application/json'}
     df_area_names = pd.read_csv('./data/cu_area_names.csv')
+    #remove non local
     df_area_names = df_area_names.iloc[15: , :]
     df_area_names['series']='CUUR'+ df_area_names['area_code'] + subject
     cnt = df_area_names.shape[0]
+    ## 15 at a time to keep the api happy
     num_loops = int(cnt/15)
     extra=  cnt%15
     x=0
@@ -114,12 +117,19 @@ def get_sub_areas(subject):
                     if 'M01' <= period <= 'M12':
                         month = int(period[1:3])
                         period_date = datetime.date(year=int(item['year']), month=month, day=int(1))
-                        df = df.append({'location': location, 'coords':{'lat': lat, 'lon': lon},'lat': lat, 'lon': lon,'year': item['year'],'period': period,'period_date': period_date, 'value': item['value']},ignore_index=True)
+                        df = df.append({'location': location, 'series':subject , 'coords':{'lat': lat, 'lon': lon},'lat': lat, 'lon': lon,'year': item['year'],'period': period,'period_date': period_date, 'value': item['value']},ignore_index=True)
 
     return(df)
 
+
+def get_file_list2():
+    global df_area_names
+    df_area_names = pd.read_csv('./data/cu_area_names.csv')
+    return df_area_names 
+
 def get_file_list(reload):
     if (reload):
+        
         #collect the list of files from here. Will have to loop through and parse individual
         df_area_names = pd.read_csv('./data/cu_area_names.csv')
         df_area_names = df_area_names.iloc[15: , :]
@@ -170,7 +180,10 @@ def get_nearest(df_counties):
     axis=1)
 
 
+
+
 def get_county_data():
+    global df_counties
     df_counties1 = pd.read_csv("./data/gdp_early.csv",error_bad_lines=False, dtype=str)
     df_counties2 = pd.read_csv("./data/gdp_late.csv",error_bad_lines=False, dtype=str)
     df_counties =  df_counties1.merge(df_counties2, how='left', left_on='GeoFips',right_on='GeoFips')
@@ -198,7 +211,7 @@ def get_county_data():
     #df_county_all3['lon'] = [g.longitude for g in df_county_all3.gcode]
 
     df_county_all3['inf_city'] = df_county_all3.apply(find_nearest, axis=1)
-    df_county_all3
+    df_counties = df_county_all3
     df_county_all3.to_csv('all_counties.csv') 
 
 
@@ -218,17 +231,14 @@ def assign_sub_inflation():
     df_counties.to_csv('all_counties_a.csv') 
              
     
-def assign_inflation():   
-    global df_inf
+def assign_inflation(df_in):   
     global df_counties
-    df_inf = pd.read_csv("out_geo.csv")
-    df_counties= pd.read_csv("all_counties_a.csv")
     for i, row in df_counties.iterrows():
-        for index, row2 in df_inf.iterrows():
+        for index, row2 in df_in.iterrows():
             if row2['location'] == row['inf_city']:
                 month = row2['period'][1:]
                 period_date = datetime.date(year=int(row2['year']), month=int(month), day=int(1))
-                date_time = period_date.strftime("%m/%d/%Y")
+                date_time = row2['series'] + '_' + period_date.strftime("%m/%d/%Y")
                 df_counties.at[i,date_time] = row2['value']
 
     df_counties.to_csv('out_fin.csv') 
@@ -241,10 +251,13 @@ def main():
     # then we can join togehter on common keys.
     # The bea data is monthly like Zillow but their is missing data for locations where county GPD not tracked
     # outputs all_counties.csv
+    # It will then look at the location of closest CPI data and assign it to a county 
     #######
     GetCounty = False # get all_counties.csv
     if GetCounty ==True:
         get_county_data()
+    else:
+        df_counties = pd.read_csv("all_counties.csv")
         
     #####
     # This will pull a new list of bls location file names and geocode their latatutide and longitude
@@ -255,23 +268,14 @@ def main():
     # We then put the longitual data in a row of out_geo.csv which will match to a location
     # Returns out_geo.csv
     #####
-    GetGeoCoded = False  #get out_geo.csv
-    if (GetGeoCoded):
-         ### True to get new list of locations
-         df=get_file_list(True)
-         ##false if already processed report file listings
-         df.to_csv('out_geo.csv') 
-    else:
-        df= pd.read_csv("out_geo.csv")
     
-    GetGeoCoded2 = False  #get out_geo2.csv
-    if (GetGeoCoded2):
-         ### True to get new list of locations
-         df=get_sub_areas('SAH')
-         ##false if already processed report file listings
-         df.to_csv('out_geo2.csv') 
+    Get_Areas = True
+    if (Get_Areas):
+        get_file_list2()
     else:
-        df= pd.read_csv("out_geo2.csv")
+        df= pd.read_csv("areas.csv")
+    
+    
     #######
     # This will take our merged county data and find the closest cpi data in a row of 
     # out_geo.csv
@@ -281,10 +285,13 @@ def main():
     # Like the the bea data there are gaps in this data where the BLS did not have data for
     # a location and time period.
     ####### 
-    assign_sub_inflation()
-    #assign_inflation()  #merge out_geo and and all_counties using geograhic correlation
+    cpi_df=get_sub_areas('SAH')
+    cpi_house=get_sub_areas('SA0')
+    assign_inflation(cpi_df)
+    assign_inflation(cpi_house)
+    #merge out_geo and and all_counties using geograhic correlation
         
-   
+
     #save data for later use
         
 
