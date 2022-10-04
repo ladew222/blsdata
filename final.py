@@ -29,10 +29,10 @@ Replicating the same formula as mentioned in Wiki
 
 def ComputeVals(row):
     return row['Ordinal_7pt'] + row['Ordinal_5pt']
-
+df_area_names = pd.read_csv('./data/cu_area_names.csv')
 
 def find_nearest(in_row):
-    df= pd.read_csv("out_geo.csv")
+    df=  pd.read_csv('./data/cu_area_names.csv')
     distances = df.apply(
         lambda row: dist(in_row['lat'], in_row['lon'], row['lat'], row['lon']), 
         axis=1)
@@ -76,19 +76,11 @@ def get_files(fnames):
 #can only do 24 series at a time
 #for sub cpi
 def get_sub_areas(subject):
-    #####
-    # We will pull a new list of bls location file names
-    # ** this step is neccessary because the bls has their data availble by location not by agregate
-    # with the neccessary detail.
-    # It then uses the list of file names and send to BLS via the API which will allow us to extract
-    # the monthly longitual CPI for each county
-    # We then put the longitual data in a row of out_geo.csv which will match to a location
-    # Returns cu_area_names.csv which will be used later
-    #####
+
     df = pd.DataFrame(columns=['location','series','coords','lat','lon','year','period','period_date','value'])
     #take individual areas and put into one file via the api and list provided
     headers = {'Content-type': 'application/json'}
-    df_area_names = pd.read_csv('./data/cu_area_names.csv')
+    df_area_names = pd.read_csv('./output/bls_ares.csv')
     #remove non local
     df_area_names = df_area_names.iloc[15: , :]
     df_area_names['series']='CUUR'+ df_area_names['area_code'] + subject
@@ -113,22 +105,21 @@ def get_sub_areas(subject):
         ## each series will have historical data for one area
         for series in json_data['Results']['series']:
             location = df_area_names['area_name'].iloc[i]
+            lat = df_area_names['lat'].iloc[i]
+            lon = df_area_names['lon'].iloc[i]
             i=i+1;
             g = gmaps_key.geocode(location)
             ##location found
-            if (len(g)>0):
-                lat = g[0]["geometry"]["location"]["lat"]
-                lon = g[0]["geometry"]["location"]["lng"]
-                seriesId = series['seriesID']
-                print(f"Processing historical data in:{seriesId} for location :{location}\n")
-                for item in series['data']:
-                    period = item['period']
-                    value = item['value']
-                    ##find the month data and instert it into row for place with lat and lon
-                    if 'M01' <= period <= 'M12':
-                        month = int(period[1:3])
-                        period_date = datetime.date(year=int(item['year']), month=month, day=int(1))
-                        df = df.append({'location': location, 'series':subject , 'coords':{'lat': lat, 'lon': lon},'lat': lat, 'lon': lon,'year': item['year'],'period': period,'period_date': period_date, 'value': item['value']},ignore_index=True)
+            seriesId = series['seriesID']
+            print(f"Processing historical data in:{seriesId} for location :{location}\n")
+            for item in series['data']:
+                period = item['period']
+                value = item['value']
+                ##find the month data and instert it into row for place with lat and lon
+                if 'M01' <= period <= 'M12':
+                    month = int(period[1:3])
+                    period_date = datetime.date(year=int(item['year']), month=month, day=int(1))
+                    df = df.append({'location': location, 'series':subject , 'coords':{'lat': lat, 'lon': lon},'lat': lat, 'lon': lon,'year': item['year'],'period': period,'period_date': period_date, 'value': item['value']},ignore_index=True)
 
     return(df)
 
@@ -187,7 +178,18 @@ def assign_sub_inflation():
     df_counties.to_csv('all_counties_a.csv') 
     return df_counties
              
+def geocode_bls_areas():
+    df_area_names = pd.read_csv('./data/cu_area_names.csv')
+    #remove non local
+    df_area_names = df_area_names.iloc[15: , :]
+    df_area_names['gcode'] = df_area_names.area_name.apply(g.geolocator.geocode)
+    df_area_names['lat'] = [g.lat for g in df_area_names.gcode]
+    df_area_names['lon'] = [g.lng for g in df_area_names.gcode]
     
+    return  df_area_names
+
+    
+      
 def assign_inflation(df_in, df_counties):   
     for i, row in df_counties.iterrows():
         for index, row2 in df_in.iterrows():
@@ -201,6 +203,21 @@ def assign_inflation(df_in, df_counties):
     return df_counties
     
 def main():
+        #####
+    # We will pull a new list of bls location file names
+    # ** this step is neccessary because the bls has their data availble by location not by agregate
+    # with the neccessary detail.
+    # It then uses the list of file names and send to BLS via the API which will allow us to extract
+    # the monthly longitual CPI for each county
+    # We then put the longitual data in a row of out_geo.csv which will match to a location
+    # Returns cu_area_names.csv which will be used later
+    #####
+    
+    df_bls_areas= geocode_bls_areas()
+    df_counties.to_csv('./output/bls_ares.csv') 
+    
+    
+    
     ########
     # Get County Data includes Zillow,BEA, and Census
     # This pulls the data. It will then merge the data by state id and county
@@ -212,7 +229,7 @@ def main():
     ####### 
     GetCounty = True # get all_counties.csv
     if GetCounty ==True:
-        df_counties = get_county_data("./output/all_counties.csv")
+        df_counties = get_county_data()
     else:
         df_counties = pd.read_csv("./output/all_counties.csv")
         
