@@ -76,6 +76,15 @@ def get_files(fnames):
 #can only do 24 series at a time
 #for sub cpi
 def get_sub_areas(subject):
+    #####
+    # We will pull a new list of bls location file names
+    # ** this step is neccessary because the bls has their data availble by location not by agregate
+    # with the neccessary detail.
+    # It then uses the list of file names and send to BLS via the API which will allow us to extract
+    # the monthly longitual CPI for each county
+    # We then put the longitual data in a row of out_geo.csv which will match to a location
+    # Returns cu_area_names.csv which will be used later
+    #####
     df = pd.DataFrame(columns=['location','series','coords','lat','lon','year','period','period_date','value'])
     #take individual areas and put into one file via the api and list provided
     headers = {'Content-type': 'application/json'}
@@ -124,10 +133,6 @@ def get_sub_areas(subject):
     return(df)
 
 
-def get_file_list2():
-    global df_area_names
-    df_area_names = pd.read_csv('./data/cu_area_names.csv')
-    return df_area_names 
 
 
 def get_nearest(df_counties):
@@ -162,7 +167,7 @@ def get_county_data():
     ## and geocode the counties
     df_county_all3['inf_city'] = df_county_all3.apply(find_nearest, axis=1)
     df_counties = df_county_all3
-    df_county_all3.to_csv('all_counties.csv') 
+    df_county_all3.to_csv('./output/all_counties.csv') 
     return df_county_all3
 
 
@@ -207,27 +212,10 @@ def main():
     ####### 
     GetCounty = True # get all_counties.csv
     if GetCounty ==True:
-        df_counties = get_county_data()
+        df_counties = get_county_data("./output/all_counties.csv")
     else:
-        df_counties = pd.read_csv("all_counties.csv")
+        df_counties = pd.read_csv("./output/all_counties.csv")
         
-    #####
-    # This will pull a new list of bls location file names
-    # ** this step is neccessary because the bls has their data availble by location not by agregate
-    # with the neccessary detail.
-    # It then uses the list of file names and send to BLS via the API which will allow us to extract
-    # the monthly longitual CPI for each county
-    # We then put the longitual data in a row of out_geo.csv which will match to a location
-    # Returns cu_area_names.csv which will be used later
-    #####
-    
-    Get_Areas = True
-    if (Get_Areas):
-        get_file_list2()
-    else:
-        df= pd.read_csv("areas.csv")
-    
-    
     #######
     # This will take our merged county data and find the closest cpi data in a row of 
     # out_geo.csv
@@ -244,7 +232,7 @@ def main():
     df_counties =assign_inflation(cpi_house, df_counties)
     #merge out_geo and and all_counties using geograhic correlation
     #save data for later use
-    df_counties.to_csv('df_final.csv') 
+    df_counties.to_csv('./output/df_final.csv') 
         
 
 if __name__ == "__main__":
