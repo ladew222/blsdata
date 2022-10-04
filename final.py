@@ -40,6 +40,7 @@ def find_nearest(in_row):
 
 
 #can only do 24 series at a time
+## see https://www.bls.gov/developers/api_faqs.htm
 def get_files(fnames):
     df = pd.DataFrame(columns=['location','coords','lat','lon','year','period','period_date','value'])
     #take individual areas and put into one file via the api and list provided
@@ -94,7 +95,8 @@ def get_sub_areas(subject):
         else:
             series =  df_area_names['series'].iloc[x:top].values.tolist()
         x=x+15
-        data = json.dumps({"seriesid":   series,"startyear":"2013", "endyear":"2019"})
+        reg_key = 'fc673660b7364f53ba5f9a530c89a82e'
+        data = json.dumps({"seriesid":   series,"startyear":"2013", "endyear":"2019","registrationkey":reg_key})
         p = requests.post('https://api.bls.gov/publicAPI/v2/timeseries/data/', data=data, headers=headers)
         json_data = json.loads(p.text)
         print(f"{json_data['status']}: {json_data['message']} \n")
@@ -241,6 +243,7 @@ def assign_inflation(df_in, df_counties):
                 period_date = datetime.date(year=int(row2['year']), month=int(month), day=int(1))
                 date_time = row2['series'] + '_' + period_date.strftime("%m/%d/%Y")
                 df_counties.at[i,date_time] = row2['value']
+    
     df_counties.to_csv('out_fin.csv') 
     return df_counties
     
@@ -291,6 +294,7 @@ def main():
     df_counties =assign_inflation(cpi_df, df_counties)
     df_counties =assign_inflation(cpi_house, df_counties)
     #merge out_geo and and all_counties using geograhic correlation
+    df_counties.to_csv('df_final.csv') 
         
 
     #save data for later use
