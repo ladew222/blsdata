@@ -129,59 +129,11 @@ def get_file_list2():
     df_area_names = pd.read_csv('./data/cu_area_names.csv')
     return df_area_names 
 
-def get_file_list(reload):
-    if (reload):
-        
-        #collect the list of files from here. Will have to loop through and parse individual
-        df_area_names = pd.read_csv('./data/cu_area_names.csv')
-        df_area_names = df_area_names.iloc[15: , :]
-        df_inf = pd.read_csv('./data/all_areas_inf.csv')
-        #df_inf = df_inf[['series_id','sid']]
-        df_inf["sid"] =  df_inf["series_id"].str.slice(4, 8)
-        df_inf.to_csv('out.csv')  
-        #df_inf[df_inf['sid'] >= 'A210']
-        #merge area names with list of series which contain the filenames with the data needed
-        df_merge_left = df_area_names.merge(df_inf, how='left', left_on='area_code',right_on='sid')
-        df_merge_left = df_merge_left.drop_duplicates(subset=['series_id','area_name'], keep='first')
-        df_merge_left['series_id']= df_merge_left['series_id'].str.strip()
-        df_merge_left= df_merge_left[['series_id','area_name']].drop_duplicates(subset = ["series_id"])
-        df_merge_left = df_merge_left[['area_name','series_id']]
-        df_merge_left.to_csv('out.csv')
-        #df_m2 = df_merge_left[df_merge_left['series_id'].str.endswith('0')]
-        #df = df_merge_left[df_merge_left['series_id'].str[-3:]=='SA0']
-        df_merge_left["rep_id"] =  df_merge_left["series_id"].str.slice(8,11)
-        df_merge_left["rep_type"] =  df_merge_left["series_id"].str.slice(3,4)
-        out = df_merge_left[df_merge_left['rep_id'].str.contains("SA0")]
-        #out = out[out['rep_type'] == 'R']
-        out.to_csv('out.csv')
-        ## we have 2 series numbers for each location where inflation is tracked
-        df = get_files(out[['series_id','area_name']].iloc[:24])
-        df2 = get_files(out[['series_id','area_name']].iloc[25:49])
-        df3 = get_files(out[['series_id','area_name']].iloc[49:74])
-        df4 = get_files(out[['series_id','area_name']].iloc[74:])
-        all = pd.concat([df, df2], axis=0)
-        all = pd.concat([all, df3], axis=0)
-        all = pd.concat([all, df4], axis=0)
-        return all
-    else:
-        out = pd.read_csv("out.csv")
-        df = get_files(out[['series_id','area_name']].iloc[:24])
-        df2 = get_files(out[['series_id','area_name']].iloc[25:49])
-        df3 = get_files(out[['series_id','area_name']].iloc[49:74])
-        df4 = get_files(out[['series_id','area_name']].iloc[74:])
-        all = pd.concat([df, df2], axis=0)
-        all = pd.concat([all, df3], axis=0)
-        all = pd.concat([all, df4], axis=0)
-        return all
-        ##now we have a list of areas and series numbers to send to api
-   
 
 def get_nearest(df_counties):
     df_counties['name'] = df_counties.apply(
     lambda row: find_nearest(row['lat'], row['lon']), 
     axis=1)
-
-
 
 
 def get_county_data():
@@ -207,15 +159,11 @@ def get_county_data():
     df_zip = pd.read_csv("./data/us_county_latlng.csv", dtype=str)
     df_county_all3 = df_county_all2.merge(df_zip, how='left', left_on='GeoFips',right_on='fips_code')
     ##now get the nearest location for inflation 
-    ##geocode the counties
-    #df_county_all3['gcode'] = df_county_all3.GeoName_x.apply(gmaps_key.geocode)
-    #df_county_all3['lat'] = [g.latitude for g in df_county_all3.gcode]
-    #df_county_all3['lon'] = [g.longitude for g in df_county_all3.gcode]
-
+    ## and geocode the counties
     df_county_all3['inf_city'] = df_county_all3.apply(find_nearest, axis=1)
     df_counties = df_county_all3
-    return df_county_all3
     df_county_all3.to_csv('all_counties.csv') 
+    return df_county_all3
 
 
 
@@ -254,23 +202,23 @@ def main():
     # In some data this comes as one string.  We need to break apart and create fields
     # then we can join togehter on common keys.
     # The bea data is monthly like Zillow but their is missing data for locations where county GPD not tracked
-    # outputs all_counties.csv
+    # outputs all_counties.csv which will be merged
     # It will then look at the location of closest CPI data and assign it to a county 
-    #######
-    GetCounty = False # get all_counties.csv
+    ####### 
+    GetCounty = True # get all_counties.csv
     if GetCounty ==True:
         df_counties = get_county_data()
     else:
         df_counties = pd.read_csv("all_counties.csv")
         
     #####
-    # This will pull a new list of bls location file names and geocode their latatutide and longitude
+    # This will pull a new list of bls location file names
     # ** this step is neccessary because the bls has their data availble by location not by agregate
     # with the neccessary detail.
     # It then uses the list of file names and send to BLS via the API which will allow us to extract
     # the monthly longitual CPI for each county
     # We then put the longitual data in a row of out_geo.csv which will match to a location
-    # Returns out_geo.csv
+    # Returns cu_area_names.csv which will be used later
     #####
     
     Get_Areas = True
@@ -288,16 +236,15 @@ def main():
     # the final output should be out_fin.csv.
     # Like the the bea data there are gaps in this data where the BLS did not have data for
     # a location and time period.
+    # outputs df_final.csv
     ####### 
     cpi_df=get_sub_areas('SAH')
     cpi_house=get_sub_areas('SA0')
     df_counties =assign_inflation(cpi_df, df_counties)
     df_counties =assign_inflation(cpi_house, df_counties)
     #merge out_geo and and all_counties using geograhic correlation
-    df_counties.to_csv('df_final.csv') 
-        
-
     #save data for later use
+    df_counties.to_csv('df_final.csv') 
         
 
 if __name__ == "__main__":
