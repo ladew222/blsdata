@@ -182,9 +182,13 @@ def geocode_bls_areas():
     df_area_names = pd.read_csv('./data/cu_area_names.csv')
     #remove non local
     df_area_names = df_area_names.iloc[15: , :]
-    df_area_names['gcode'] = df_area_names.area_name.apply(g.geolocator.geocode)
-    df_area_names['lat'] = [g.lat for g in df_area_names.gcode]
-    df_area_names['lon'] = [g.lng for g in df_area_names.gcode]
+    df_area_names['lon'] = ""
+    df_area_names['lat'] = ""
+    for x in range(len(df_area_names)):
+        geocode_result = gmaps_key.geocode(df_area_names['area_name'][x])
+        df_area_names['lat'][x] = geocode_result[0]['geometry']['location'] ['lat']
+        df_area_names['lon'][x] = geocode_result[0]['geometry']['location']['lng']
+    
     
     return  df_area_names
 
@@ -212,12 +216,12 @@ def main():
     # We then put the longitual data in a row of out_geo.csv which will match to a location
     # Returns cu_area_names.csv which will be used later
     #####
-    
-    df_bls_areas= geocode_bls_areas()
-    df_counties.to_csv('./output/bls_ares.csv') 
-    
-    
-    
+    GetAreas= True # get all_counties.csv
+    if GetCounty ==True:
+        df_bls_areas= geocode_bls_areas()
+        df_bls_areas.to_csv('./output/bls_ares.csv') 
+    else:
+        df_bls_areas = pd.read_csv("./output/bls_ares.csv")
     ########
     # Get County Data includes Zillow,BEA, and Census
     # This pulls the data. It will then merge the data by state id and county
