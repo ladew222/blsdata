@@ -9,7 +9,7 @@ from math import radians, cos, sin, asin, sqrt
 df_inf = []
 df_counties = []
 df_area_names =[]
-gmaps_key = googlemaps.Client(key="AIzaSyBlYSDiXeAAKbZQdUEDWCsPhKJPuOA-z7g")
+gmaps = googlemaps.Client(key="AIzaSyBlYSDiXeAAKbZQdUEDWCsPhKJPuOA-z7g")
 
 def dist(lat1, long1, lat2, long2):
     """
@@ -29,10 +29,10 @@ Replicating the same formula as mentioned in Wiki
 
 def ComputeVals(row):
     return row['Ordinal_7pt'] + row['Ordinal_5pt']
-df_area_names = pd.read_csv('./data/cu_area_names.csv')
+
 
 def find_nearest(in_row):
-    df=  pd.read_csv('./data/cu_area_names.csv')
+    df = pd.read_csv("./output/bls_areas.csv")
     distances = df.apply(
         lambda row: dist(in_row['lat'], in_row['lon'], row['lat'], row['lon']), 
         axis=1)
@@ -55,7 +55,7 @@ def get_files(fnames):
     for series in json_data['Results']['series']:
         location = fnames['area_name'].iloc[i]
         i=i+1;
-        g = gmaps_key.geocode(location)
+        g = gmaps.geocode(location)
         ##location found
         if (len(g)>0):
             lat = g[0]["geometry"]["location"]["lat"]
@@ -80,7 +80,7 @@ def get_sub_areas(subject):
     df = pd.DataFrame(columns=['location','series','coords','lat','lon','year','period','period_date','value'])
     #take individual areas and put into one file via the api and list provided
     headers = {'Content-type': 'application/json'}
-    df_area_names = pd.read_csv('./output/bls_ares.csv')
+    df_area_names = pd.read_csv('./output/bls_areas.csv')
     #remove non local
     df_area_names = df_area_names.iloc[15: , :]
     df_area_names['series']='CUUR'+ df_area_names['area_code'] + subject
@@ -108,7 +108,7 @@ def get_sub_areas(subject):
             lat = df_area_names['lat'].iloc[i]
             lon = df_area_names['lon'].iloc[i]
             i=i+1;
-            g = gmaps_key.geocode(location)
+            g = gmaps.geocode(location)
             ##location found
             seriesId = series['seriesID']
             print(f"Processing historical data in:{seriesId} for location :{location}\n")
@@ -182,14 +182,19 @@ def geocode_bls_areas():
     df_area_names = pd.read_csv('./data/cu_area_names.csv')
     #remove non local
     df_area_names = df_area_names.iloc[15: , :]
+    df_area_names = df_area_names.reset_index(drop=True)
     df_area_names['lon'] = ""
     df_area_names['lat'] = ""
-    for x in range(len(df_area_names)):
-        geocode_result = gmaps_key.geocode(df_area_names['area_name'][x])
-        df_area_names['lat'][x] = geocode_result[0]['geometry']['location'] ['lat']
-        df_area_names['lon'][x] = geocode_result[0]['geometry']['location']['lng']
-    
-    
+    max =len(df_area_names)-1
+    for x in range(max):
+        geocode_result = gmaps.geocode(df_area_names['area_name'].iloc[x])
+        try:
+            df_area_names.at[x,'lat']=geocode_result[0]['geometry']['location']['lat']
+            df_area_names.at[x,'lon']=geocode_result[0]['geometry']['location']['lng']
+        except IndexError:
+            print("Address was wrong..."+ df_area_names['area_name'])
+        except Exception as e:
+            print("Unexpected error occurred.", e )
     return  df_area_names
 
     
@@ -216,12 +221,15 @@ def main():
     # We then put the longitual data in a row of out_geo.csv which will match to a location
     # Returns cu_area_names.csv which will be used later
     #####
-    GetAreas= True # get all_counties.csv
-    if GetCounty ==True:
-        df_bls_areas= geocode_bls_areas()
-        df_bls_areas.to_csv('./output/bls_ares.csv') 
+    
+    GetBLS = True # get all_counties.csv
+    if GetBLS ==True:
+        bls_areas = geocode_bls_areas()
+        bls_areas.to_csv('./output/bls_areas.csv"') 
     else:
-        df_bls_areas = pd.read_csv("./output/bls_ares.csv")
+        bls_areas = pd.read_csv("./output/bls_ares.csv")
+
+    
     ########
     # Get County Data includes Zillow,BEA, and Census
     # This pulls the data. It will then merge the data by state id and county
