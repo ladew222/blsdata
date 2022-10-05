@@ -36,7 +36,7 @@ def find_nearest(in_row):
     distances = df.apply(
         lambda row: dist(in_row['lat'], in_row['lon'], row['lat'], row['lon']), 
         axis=1)
-    return df.loc[distances.idxmin(), 'location']
+    return df.loc[distances.idxmin(), 'area_name']
 
 
 #can only do 24 series at a time
@@ -225,7 +225,7 @@ def main():
     GetBLS = True # get all_counties.csv
     if GetBLS ==True:
         bls_areas = geocode_bls_areas()
-        bls_areas.to_csv('./output/bls_areas.csv"') 
+        bls_areas.to_csv('./output/bls_areas.csv') 
     else:
         bls_areas = pd.read_csv("./output/bls_ares.csv")
 

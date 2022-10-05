@@ -1,0 +1,44 @@
+,area_code,area_name,display_level,selectable,sort_sequence,lon,lat
+0,A210,"Cleveland-Akron, OH",1,T,19,-81.4951732,41.0691492
+1,A212,"Milwaukee-Racine, WI",1,T,20,-87.9064736,43.0389025
+2,A213,"Cincinnati-Hamilton, OH-KY-IN",1,T,21,-84.2700179,37.8393332
+3,A214,"Kansas City, MO-KS",1,T,22,-94.5785667,39.0997265
+4,A311,"Washington-Baltimore, DC-MD-VA-WV",1,T,36,-76.6683922,39.1774042
+5,A421,"Los Angeles-Riverside-Orange County, CA",1,T,53,-118.2436849,34.0522342
+6,A425,"Portland-Salem, OR-WA",1,T,54,-123.0350963,44.9428975
+7,D000,Size Class D,0,T,4,,
+8,D200,Midwest - Size Class D,1,T,27,,
+9,D300,South - Size Class D,1,T,42,,
+10,N000,Size Class B/C,0,T,3,,
+11,N100,Northeast - Size Class B/C,1,T,13,,
+12,N200,Midwest - Size Class B/C,1,T,26,,
+13,N300,South - Size Class B/C,1,T,41,,
+14,N400,West - Size Class B/C,1,T,58,,
+15,S000,Size Class A,0,T,2,,
+16,S100,Northeast - Size Class A,1,T,12,,
+17,S11A,"Boston-Cambridge-Newton, MA-NH",1,T,8,-71.0588305,42.3600709
+18,S12A,"New York-Newark-Jersey City, NY-NJ-PA",1,T,6,-74.4056612,40.0583238
+19,S12B,"Philadelphia-Camden-Wilmington, PA-NJ-DE-MD",1,T,7,-75.1545381,39.8373479
+20,S200,Midwest - Size Class A,1,T,25,,
+21,S23A,"Chicago-Naperville-Elgin, IL-IN-WI",1,T,15,-88.2825668,42.0354084
+22,S23B,"Detroit-Warren-Dearborn, MI",1,T,16,-83.17631449999999,42.3222599
+23,S24A,"Minneapolis-St.Paul-Bloomington, MN-WI",1,T,17,-93.20099979999999,44.9374831
+24,S24B,"St. Louis, MO-IL",1,T,18,-90.4502368,38.8196814
+25,S300,South - Size Class A,1,T,40,,
+26,S35A,"Washington-Arlington-Alexandria, DC-VA-MD-WV",1,T,34,-77.0368707,38.9071923
+27,S35B,"Miami-Fort Lauderdale-West Palm Beach, FL",1,T,32,-80.0533746,26.7153424
+28,S35C,"Atlanta-Sandy Springs-Roswell, GA",1,T,29,-84.4382721,33.8498184
+29,S35D,"Tampa-St. Petersburg-Clearwater, FL",1,T,33,-82.38857829999999,28.274347
+30,S35E,"Baltimore-Columbia-Towson, MD",1,T,35,-76.64127119999999,39.372594
+31,S37A,"Dallas-Fort Worth-Arlington, TX",1,T,30,-96.9209135,32.7078751
+32,S37B,"Houston-The Woodlands-Sugar Land, TX",1,T,31,-95.6225521,29.5984434
+33,S400,West - Size Class A,1,T,57,,
+34,S48A,"Phoenix-Mesa-Scottsdale, AZ",1,T,49,-111.8314724,33.4151843
+35,S48B,"Denver-Aurora-Lakewood, CO",1,T,45,-104.8454619,39.5142848
+36,S49A,"Los Angeles-Long Beach-Anaheim, CA",1,T,47,-117.9143012,33.8365932
+37,S49B,"San Francisco-Oakland-Hayward, CA",1,T,51,-122.0809964,37.6687665
+38,S49C,"Riverside-San Bernardino-Ontario, CA",1,T,48,-117.6508876,34.0633443
+39,S49D,Seattle-Tacoma-Bellevue WA,1,T,52,-122.3320534,47.6061031
+40,S49E,"San Diego-Carlsbad, CA",1,T,50,-117.3505939,33.1580933
+41,S49F,Urban Hawaii,1,T,46,-155.5827818,19.8967662
+42,S49G,Urban Alaska,1,T,44,,
