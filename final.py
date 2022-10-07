@@ -3,6 +3,7 @@ import json
 import pandas as pd
 import googlemaps
 import datetime
+import numpy as np
 from numpy import random
 from math import radians, cos, sin, asin, sqrt
 
@@ -221,13 +222,13 @@ def main():
     # We then put the longitual data in a row of out_geo.csv which will match to a location
     # Returns cu_area_names.csv which will be used later
     #####
-    
+    out_path = "./output/"
     GetBLS = True # get all_counties.csv
     if GetBLS ==True:
         bls_areas = geocode_bls_areas()
-        bls_areas.to_csv('./output/bls_areas.csv') 
+        bls_areas.to_csv(out_path + 'bls_areas.csv') 
     else:
-        bls_areas = pd.read_csv("./output/bls_ares.csv")
+        bls_areas = pd.read_csv(out_path + "bls_ares.csv")
 
     
     ########
@@ -243,7 +244,7 @@ def main():
     if GetCounty ==True:
         df_counties = get_county_data()
     else:
-        df_counties = pd.read_csv("./output/all_counties.csv")
+        df_counties = pd.read_csv(out_path + "all_counties.csv")
         
     #######
     # This will take our merged county data and find the closest cpi data in a row of 
@@ -261,8 +262,13 @@ def main():
     df_counties =assign_inflation(cpi_house, df_counties)
     #merge out_geo and and all_counties using geograhic correlation
     #save data for later use
-    df_counties.to_csv('./output/df_final.csv') 
+    df_counties.to_csv(out_path + 'df_final.csv') 
         
 
 if __name__ == "__main__":
     main()
+    
+    
+
+
+
